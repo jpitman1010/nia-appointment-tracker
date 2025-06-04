@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"
+    integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.js"
+    integrity="sha512-u9G5WcQXGaw9PgODOBfc5X5AjuWWJJKEUtuEfRAUPJf/SJZ40muyH7hOAFTlplwkEG3jC8PKurH/oSzQP975ng=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"
+    integrity="sha512-czERuOifK1fy7MssE4JJ7d0Av55NPiU2Ymv4R6F0mOGpyPUb9HkP9DcEeE+Qj9In7hWQHGg0CqH1ELgNBJXqGA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.js"
+    integrity="sha512-yUwPZS7XBCeFJsjU9IKl/bUCpWNnFv449g6/ieJKudXqqQu3550ZtEnONSiVNOEGu9Xhmz6rzMAtU2I06KEeRQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <!-- CSS only -->
+  <title>
+    ESS
+</title>
+  <!-- <script src="../static/js/add_research_protocol.js" language="JavaScript" type="text/javascript"></script>   -->
+  <link rel="stylesheet" href="../static/css/research_protocol.css">
+</head>
+
+<body>
+  <h1>Epworth Sleepiness Scale</p>
+  <br><br><br>
+  <div class="form-container">
+    <div id="back-button">&#8592;</div>
+    <h3>How likely are you to doze off or fall asleep in the following situations, in contrast to feeling just tired? 
+        <br><br>
+        This refers to your usual way of life in recent times. 
+        <br><br>
+        Even if you haven’t done some of these things recently try to work out how they would have affected you. </h3>
+        <br><br>
+        Use the following scale to choose the <b>most appropriate number</b> for each situation:
+        <br> 0  =  Would <b>never</b> doze
+        <bR> 1  =  <b>Slight chance</b> of dozing 
+        <br> 2  =  <b>Moderate chance</b> of dozing 
+        <br> 3  =  <b>High chance</b> of dozing 
+        
+        <br><br><b>It is important that you answer each question as best you can. 
+    <form action="/ess" method="POST">
+      <div class="form-group" data-step="1">          
+        <label for="q1" id="q1_label">Sitting and reading</label>
+        <select name="q1" id="q1" class="form-control" required>
+          <option value="0">Would <b>never</b> doze</option>
+          <option value="1"><b>Slight chance</b> of dozing</option>
+         <option value="2"><b>Moderate chance</b> of dozing</option>
+          <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="2">          
+        <label for="q2" id="q2_label">Watching TV</label>
+        <select name="q2" id="q2" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="3">          
+        <label for="q3" id="q3_label">Sitting, inactive in a public place (e.g. a theatre or a meeting)</label>
+        <select name="q3" id="q3" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="4">          
+        <label for="q4" id="q4_label">As a passenger in a car for an hour without a break</label>
+        <select name="q4" id="q4" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="5">          
+        <label for="q5" id="q5_label">Lying down to rest in the afternoon when circumstances permit</label>
+        <select name="q5" id="q5" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>
+      </div>     
+       <div class="form-group" data-step="6">          
+        <label for="q6" id="q6_label">Sitting and talking to someone</label>
+        <select name="q6" id="q6" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>      
+      <div class="form-group" data-step="7">          
+        <label for="q7" id="q7_label">Sitting quietly after a lunch without alcohol</label>
+        <select name="q7" id="q7" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>      
+      <div class="form-group" data-step="8">          
+        <label for="q8" id="q8_label">In a car, whille stopped fora few minutes in traffic</label>
+        <select name="q8" id="q8" class="form-control" required>
+            <option value="0">Would <b>never</b> doze</option>
+            <option value="1"><b>Slight chance</b> of dozing</option>
+           <option value="2"><b>Moderate chance</b> of dozing</option>
+            <option value="3"><b>High chance</b>of dozing</option>
+        </select>
+      </div>    
+      <footer>THANK YOU FOR YOUR COOPERATION 
+          <br>
+          Copyright: M.W. Johns  1990-97 
+      </footer> 
+     
+      <button type="submit" id="next-button" class="btn btn-primary">Next</button>
+    </form>
+    <a class="home btn btn-light m-2 d-block" role="button" href="/main_page_route">Return to home page.</a><br>
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+  </script>
+  <!-- <script src="../static/js/research_protocol.js"></script> -->
+</body>
+
+</html>

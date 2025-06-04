@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block head %}
+<link rel="stylesheet" href="../static/css/research_protocol.css">
+<link rel="stylesheet" href="../static/css/add_research_protocol.css">
+{{ super() }}
+<title>
+    Protocol Builder
+</title>
+{% endblock %}
+{% block content %}
+<div>
+    <div id="protocol_parameters">
+        <form method="POST" action="/pre_to_add_protocol" enctype="multipart/form-data">
+            <label for="name_of_study">Protocol Name (do not use spaces, use _ instead.)</label><br>
+            <input type="text" name="name_of_study" id="name_of_study"> <br>
+            <label for="coordinator">Research Coordinator's Full Name</label> <br>
+            <input type="text" name="coordinator" id="coordinator"><br>
+            <label for="p_i">PI name.</label><br>
+            <input type="text" name="p_i" id="p_i"><br>
+            <label for="start_of_study_date">Start of research study (date)</label><br>
+            <input type="date" name="start_of_study_date" id="start_of_study_date"><br>
+            <label for="end_of_study_date">End of research study (date)</label><br>
+            <input type="date" name="end_of_study_date" id="end_of_study_date"><br>
+            <input type="submit" onclick="hide_submit()"></input>
+        </form>
+        <br><br><br><br>
+    </div>
+
+
+    <div id="back-button">&#8592;</div>
+</div>
+</div>
+<script src="../static/js/add_research_protocol.js"></script>
+{% endblock %}

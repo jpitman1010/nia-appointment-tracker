@@ -1,0 +1,457 @@
+<th class="th-sm">MRN
+</th>
+<th class="th-sm">First Name (Latin)
+</th>
+<th class="th-sm">Last Name (Latin)
+</th>
+<th class="th-sm">First Name (Greek)
+</th>
+<th class="th-sm">Last Name (Greek)
+</th>
+<th class="th-sm">DOB
+</th>
+<th class="th-sm">Place of Birth
+</th>
+<th class="th-sm">Sex
+</th>
+<th class="th-sm">Handedness
+</th>
+<th class="th-sm">Race
+</th>
+<th class="th-sm">Race Subtype
+</th>
+<th class="th-sm">Father's Name
+</th>
+<th class="th-sm">Mother's Name
+</th>
+<th class="th-sm">Phone
+</th>
+<th class="th-sm">Surrogate Phone
+</th>
+<th class="th-sm">Surrogate Relationship
+</th>
+<th class="th-sm">Address
+</th>
+<th class="th-sm">Email
+</th>
+<th class="th-sm">AMKA
+</th>
+
+
+
+
+<td data-fname></td>
+<td data-lname></td>
+<td data-gfname></td>
+<td data-glname></td>
+<td data-dob></td>
+<td data-place_of_birth></td>
+<td data-sex></td>
+<td data-handedness></td>
+<td data-race></td>
+<td data-race_subtype></td>
+<td data-fathers_name></td>
+<td data-mothers_name></td>
+<td data-phone></td>
+<td data-surrogate_phone></td>
+<td data-address></td>
+<td data-email></td>
+<td data-amka></td>
+<td></td>
+
+
+
+<th class="th-sm">First Name (Latin)
+</th>
+<th class="th-sm">Last Name (Latin)
+</th>
+<th class="th-sm">First Name (Greek)
+</th>
+<th class="th-sm">Last Name (Greek)
+</th>
+<th class="th-sm">DOB
+</th>
+<th class="th-sm">Place of Birth
+</th>
+<th class="th-sm">Sex
+</th>
+<th class="th-sm">Handedness
+</th>
+<th class="th-sm">Race
+</th>
+<th class="th-sm">Race Subtype
+</th>
+<th class="th-sm">Father's Name
+</th>
+<th class="th-sm">Mother's Name
+</th>
+<th class="th-sm">Phone
+</th>
+<th class="th-sm">Surrogate Phone
+</th>
+<th class="th-sm">Surrogate Relationship
+</th>
+<th class="th-sm">Address
+</th>
+<th class="th-sm">Email
+</th>
+<th class="th-sm">AMKA
+</th>
+
+
+
+<script>
+    let encounters = []
+    console.log( "encounters dict = ", encounters )
+    console.log( "encounters keys = ", encounters.keys )
+
+
+    let encounter_keys = encounters.keys
+
+    let encounter_number = encounters.length
+    console.log( 'encounter number == ', encounter_number )
+    let encounter_id = "T" + encounter_number;
+    console.log( 'encounter id === ', encounter_id )
+
+    function double_check( input ) {
+        let selections = document.getElementById( "encounters_selection" );
+        selection_list = []
+
+        console.log( 'input in check_selection_list()', input )
+
+        let i;
+        for ( i = 0; i < selections.length; i++ ) {
+            txt = selections.options[ i ].value;
+            selection_list.push( txt )
+        }
+
+        console.log( 'selection_list =====', selection_list )
+
+        for ( selection of selection_list ) {
+            console.log( 'for loop selection ==', selection, "compared to input ==", input )
+            if ( selection == input ) {
+                console.log( 'for loop selection ==', selection, "should equal input here -", input )
+                return false
+            }
+        }
+        return true
+    }
+
+
+
+    function add_encounter_type() {
+        let input = document.getElementById( "user_encounter_type" ).value;
+        let selections = document.getElementById( "encounters_selection" );
+        if ( input == "" ) {
+            alert( "Please type name of encounter before clicking 'add'" );
+            console.log( double_check( input ) )
+        } else {
+            if ( double_check( input ) == true ) {
+                let option = document.createElement( 'option' );
+                option.text = input;
+                option.value = input;
+                selections.add( option );
+                document.getElementById( "user_encounter_type" ).value = "";
+            } else {
+                alert( "That option is already in the list." );
+                document.getElementById( "user_encounter_type" ).value = "";
+            }
+        }
+    }
+
+
+    function save_encounter_type_selected() {
+
+        encounters.push( {
+            key: encounter_id,
+            value: []
+        } );
+
+        var select = document.getElementsByTagName( 'select' )[ 0 ];
+        var result = [];
+        var options = select && select.options;
+        var opt;
+
+        for ( var i = 0, iLen = options.length; i < iLen; i++ ) {
+            opt = options[ i ];
+
+            if ( opt.selected ) {
+                result.push( {
+                    key: opt.value || opt.text,
+                    value: []
+                } );
+            }
+        }
+
+        if ( result.length > 1 ) {
+            let order_container = document.getElementById( "order_of_encounter_type" );
+            let header = document.createElement( 'h3' );
+            header.append(
+                "Please arrange the appointments in the order they should occur then click next. If there is no specified order, click next."
+                )
+            order_container.appendChild( header )
+            let list_section = document.createElement( "list_section" )
+            list_section.setAttribute( "id", "list_section" )
+            order_container.appendChild( list_section )
+            let ul = document.createElement( "ul" );
+            ul.className = "draggable-list"
+            ul.id = "draggable-list"
+            list_section.appendChild( ul )
+
+
+            const list_items = [];
+            let dragStartIndex;
+
+
+            for ( let i = 0; i < result.length; i++ ) {
+                console.log( i )
+                let li = document.createElement( "li" );
+                li.setAttribute( 'data-index', i );
+                li.innerHTML = `
+            <span class="number">${i + 1}
+            </span>
+                <div class="draggable" draggable="true>
+                    <p class="encounter-type">${result[i].key}
+                    <i class="fa-solid fa-grip-lines mx-2"></i>
+                </div>
+            `
+                list_items.push( li );
+                ul.appendChild( li );
+
+            }
+
+
+
+            function dragStart() {
+                dragStartIndex = +this.closest( 'li' ).getAttribute( 'data-index' );
+                console.log( 'dragStartIndex ====', dragStartIndex );
+
+            }
+
+            function dragOver( e ) {
+                e.preventDefault();
+            }
+
+            function dragDrop() {
+                const dragEndIndex = +this.getAttribute( 'data-index' );
+                console.log( 'dragEndIndex === ', dragEndIndex );
+                swapItems( dragStartIndex, dragEndIndex );
+                this.classList.remove( 'over' );
+            }
+
+            function dragEnter() {
+                this.classList.add( "over" );
+            }
+
+            function dragLeave() {
+                this.classList.remove( "over" );
+            }
+
+            function swapItems( fromIndex, toIndex ) {
+                const itemOne = list_items[ fromIndex ].querySelector( '.draggable' );
+                const itemTwo = list_items[ toIndex ].querySelector( '.draggable' );
+
+                list_items[ fromIndex ].appendChild( itemTwo );
+                list_items[ toIndex ].appendChild( itemOne );
+
+            }
+
+            function addEventListeners() {
+                const draggables = document.querySelectorAll( ".draggable" );
+                const dragListItems = document.querySelectorAll( ".draggable-list li" );
+
+                draggables.forEach( draggable => {
+                    draggable.addEventListener( "dragstart", dragStart );
+                } )
+                dragListItems.forEach( item => {
+                    item.addEventListener( "dragover", dragOver );
+                    item.addEventListener( "drop", dragDrop );
+                    item.addEventListener( "dragenter", dragEnter );
+                    item.addEventListener( "dragleave", dragLeave );
+                } )
+
+            }
+
+            addEventListeners();
+            let next_button = document.createElement( 'button' )
+            next_button.className = "btn btn-primary"
+            next_button.id = "next_button"
+            next_button.onclick = whatIsNext()
+            next_button.innerText = "Next"
+            order_container.appendChild( next_button )
+
+            next_button.addEventListener( "click", whatIsNext )
+
+
+
+
+            return result;
+
+
+            function whatIsNext() {
+                result = list_items;
+                encounters[ encounter_number ][ encounter_id ] = result
+                console.log( 'result  = ', result )
+                console.log( 'sorted by user -encounters ===', encounters )
+                console.log( "what is next???" );
+            }
+        }
+    }
+
+
+
+
+
+
+    // function add_encounters(){
+    //     // // Generate a dynamic number of inputs
+    //     // let number = document.getElementById("number_of_encounters").value;
+    //     // Get the element where the inputs will be added to
+    //     let container = document.getElementById("encounters_container");
+    //     // Remove every children it had before
+    //     while (container.hasChildNodes()) {
+    //         container.removeChild(container.lastChild);
+    //     }
+    //     for (i=0;i<number;i++){
+    //         // Append a node with a random text
+    //         container.appendChild(document.createTextNode("Encounter " + (i+1)));
+    //         // Create an <input> element, set its type and name attributes
+    //         let input = document.createElement("input");
+    //         input.type = "text";
+    //         input.name = "encounter " + i;
+    //         input.onkeypress="return event.charCode != 32"
+    //         container.appendChild(input);
+    //         // Append a line break 
+    //         container.appendChild(document.createElement("br"));
+    //     }
+    // }
+
+
+    // function add_document_fields(){
+    //     // Generate a dynamic number of inputs
+    //     let number = document.getElementById("number_of_documents").value;
+    //     // Get the element where the inputs will be added to
+    //     let container = document.getElementById("documents_container");
+    //     // Remove every children it had before
+    //     while (container.hasChildNodes()) {
+    //         container.removeChild(container.lastChild);
+    //     }
+    //     for (i=0;i<number;i++){
+    //         // Append a node with a random text
+    //         container.appendChild(document.createTextNode("Document " + (i+1)));
+    //         // Create an <input> element, set its type and name attributes
+    //         let input = document.createElement("input");
+    //         input.type = "text";
+    //         input.name = "document " + i;
+    //         input.onkeypress="return event.charCode != 32"
+    //         container.appendChild(input);
+    //         // Append a line break 
+    //         container.appendChild(document.createElement("br"));
+    //     }
+    // }
+
+
+    // function add_lab_fields(){
+    //     // Generate a dynamic number of inputs
+    //     let number = document.getElementById("number_of_labs").value;
+    //     // Get the element where the inputs will be added to
+    //     let container = document.getElementById("labs_container");
+    //     // Remove every children it had before
+    //     while (container.hasChildNodes()) {
+    //         container.removeChild(container.lastChild);
+    //     }
+    //     for (i=0;i<number;i++){
+    //         // Append a node with a random text
+    //         container.appendChild(document.createTextNode("Lab " + (i+1)));
+    //         // Create an <input> element, set its type and name attributes
+    //         let input = document.createElement("input");
+    //         input.type = "text";
+    //         input.name = "lab " + i;
+    //         input.onkeypress="return event.charCode != 32"
+    //         container.appendChild(input);
+    //         // Append a line break 
+    //         container.appendChild(document.createElement("br"));
+    //     }
+    // }
+
+
+    // function add_test_fields(){
+    //     // Generate a dynamic number of inputs
+    //     let number = document.getElementById("number_of_tests").value;
+    //     // Get the element where the inputs will be added to
+    //     let container = document.getElementById("tests_container");
+    //     // Remove every children it had before
+    //     while (container.hasChildNodes()) {
+    //         container.removeChild(container.lastChild);
+    //     }
+    //     for (i=0;i<number;i++){
+    //         // Append a node with a random text
+    //         container.appendChild(document.createTextNode("Test " + (i+1)));
+    //         // Create an <input> element, set its type and name attributes
+    //         let input = document.createElement("input");
+    //         input.type = "text";
+    //         input.name = "test " + i;
+    //         input.onkeypress="return event.charCode != 32"
+    //         container.appendChild(input);
+    //         // Append a line break 
+    //         container.appendChild(document.createElement("br"));
+    //     }
+    // }
+
+    // function add_biosample_fields(){
+    //     // Generate a dynamic number of inputs
+    //     let number = document.getElementById("number_of_biosamples").value;
+    //     // Get the element where the inputs will be added to
+    //     let container = document.getElementById("biosamples_container");
+    //     // Remove every children it had before
+    //     while (container.hasChildNodes()) {
+    //         container.removeChild(container.lastChild);
+    //     }
+    //     for (i=0;i<number;i++){
+    //         // Append a node with a random text
+    //         container.appendChild(document.createTextNode("Bio-Sample " + (i+1)));
+    //         // Create an <input> element, set its type and name attributes
+    //         let input = document.createElement("input");
+    //         input.type = "text";
+    //         input.name = "biosample " + i;
+    //         input.onkeypress="return event.charCode != 32"
+    //         container.appendChild(input);
+    //         // Append a line break 
+    //         container.appendChild(document.createElement("br"));
+    //     }
+    // }
+
+    // function add_additional_fields(){
+    //     // Generate a dynamic number of inputs
+    //     let number = document.getElementById("number_of_additional").value;
+    //     // Get the element where the inputs will be added to
+    //     let container = document.getElementById("additionals_container");
+    //     // Remove every children it had before
+    //     while (container.hasChildNodes()) {
+    //         container.removeChild(container.lastChild);
+    //     }
+    //     for (i=0;i<number;i++){
+    //         // Append a node with a random text
+    //         container.appendChild(document.createTextNode("Additional " + (i+1)));
+    //         // Create an <input> element, set its type and name attributes
+    //         let input = document.createElement("input");
+    //         input.type = "text";
+    //         input.name = "additional " + i;
+    //         input.onkeypress="return event.charCode != 32"
+    //         container.appendChild(input);
+    //         // Append a line break 
+    //         container.appendChild(document.createElement("br"));
+    //     }
+    // }
+</script>
+
+
+
+<!-- <div>
+        <label for="file">Upload protocol via Xml, Xls, CSV file. There should be only 1 sheet in the file.
+          The file will contain data in row 1 for each part of the protocol needing to be tracked,
+           then, on row 2, indicate one of the following data-types  for each column: Integer, DateTime, String (mrn/ID should be string), Boolean, VARCHAR.
+        </label>
+        <input type="file" id="file" name="file" enctype="multipart/form-data">
+        <input type="submit">Submit</input>
+      </div> -->

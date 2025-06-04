@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"
+    integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.js"
+    integrity="sha512-u9G5WcQXGaw9PgODOBfc5X5AjuWWJJKEUtuEfRAUPJf/SJZ40muyH7hOAFTlplwkEG3jC8PKurH/oSzQP975ng=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"
+    integrity="sha512-czERuOifK1fy7MssE4JJ7d0Av55NPiU2Ymv4R6F0mOGpyPUb9HkP9DcEeE+Qj9In7hWQHGg0CqH1ELgNBJXqGA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.js"
+    integrity="sha512-yUwPZS7XBCeFJsjU9IKl/bUCpWNnFv449g6/ieJKudXqqQu3550ZtEnONSiVNOEGu9Xhmz6rzMAtU2I06KEeRQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <!-- CSS only -->
+  <title>
+    ISI
+</title>
+  <!-- <script src="../static/js/add_research_protocol.js" language="JavaScript" type="text/javascript"></script>   -->
+  <link rel="stylesheet" href="../static/css/research_protocol.css">
+</head>
+
+<body>
+  <h1>Insomnia Severity Index</p>
+  <br><br><br>
+  <div class="form-container">
+    <div id="back-button">&#8592;</div>
+    <h3>The Insomnia Severity Index has seven questions. The seven answers are added up to get a total score. When you have your total score, look at the 'Guidelines for Scoring/Interpretation' below to see where your sleep difficulty fits.  
+        <br><br>For each question, please select the number that best describes your answer. 
+        <br><br> Please rate the CURRENT (i.e. LAST 2 WEEKS) SEVERITY of your insomnia problem(s). </h3>
+    <form action="/isi" method="POST">
+      <div class="form-group" data-step="1">          
+        <label for="q1" id="q1_label">Difficulty falling asleep </label>
+        <select name="q1" id="q1" class="form-control" required>
+         <option value="0">None</option>
+          <option value="1">Mild</option>
+         <option value="2">Moderate</option>
+          <option value="3">Severe</option>
+          <option value="4">Very Severe</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="2">          
+        <label for="q2" id="q2_label">Difficulty staying asleep </label>
+        <select name="q2" id="q2" class="form-control" required>
+            <option value="0">None</option>
+            <option value="1">Mild</option>
+           <option value="2">Moderate</option>
+            <option value="3">Severe</option>
+            <option value="4">Very Severe</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="3">          
+        <label for="q3" id="q3_label">Problems waking up too early</label>
+        <select name="q3" id="q3" class="form-control" required>
+            <option value="0">None</option>
+            <option value="1">Mild</option>
+           <option value="2">Moderate</option>
+            <option value="3">Severe</option>
+            <option value="4">Very Severe</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="4">          
+        <label for="q4" id="q4_label">How SATISFIED/DISSATISFIED are you with your CURRENT sleep pattern?</label>
+        <select name="q4" id="q4" class="form-control" required>
+            <option value="0">Very Satisfied</option>
+            <option value="1">Satisfied</option>
+           <option value="2">Moderately Satisfied</option>
+            <option value="3">Dissatisfied</option>
+            <option value="4">Very Dissatisfied</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="5">          
+        <label for="q5" id="q5_label">How NOTICEABLE to others do you think your sleep problem is in terms of impairing the quality of your life?</label>
+        <select name="q5" id="q5" class="form-control" required>
+         <option value="0">Not at all Noticeable</option>
+          <option value="1">A Little</option>
+         <option value="2">Somewhat</option>
+          <option value="3">Much</option>
+          <option value="4">Very Much Noticeable</option>
+        </select>
+      </div>
+      </div>     
+       <div class="form-group" data-step="6">          
+        <label for="q6" id="q6_label">How WORRIED/DISTRESSED are you about your current sleep problem?</label>
+        <select name="q6" id="q6" class="form-control" required>
+            <option value="0">Not at all Worried</option>
+            <option value="1">A Little</option>
+           <option value="2">Somewhat</option>
+            <option value="3">Much</option>
+            <option value="4">Very Much Worried</option>
+        </select>
+      </div>      
+      <div class="form-group" data-step="7">          
+        <label for="q7" id="q7_label">To what extent do you consider your sleep problem to INTERFERE with your daily functioning (e.g. daytime fatigue, mood, ability to function at work/daily chores, concentration, memory, mood, etc.) CURRENTLY?</label>
+        <select name="q7" id="q7" class="form-control" required>
+            <option value="0">Not at all Interfering</option>
+            <option value="1">A Little</option>
+           <option value="2">Somewhat</option>
+            <option value="3">Much</option>
+            <option value="4">Very Much Interfering</option>
+        </select>
+      </div>      
+      
+      <button type="submit" id="next-button" class="btn btn-primary">Next</button>
+    </form>
+    <a class="home btn btn-light m-2 d-block" role="button" href="/main_page_route">Return to home page.</a><br>
+  </div>
+
+  <footer>Developed by Drs. Robert L. Spitzer, Janet B.W. Williams, Kurt Kroenke and colleagues, with an educational grant from Pfizer Inc.  No permission required to reproduce, translate, display or distribute.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+  </script>
+  <!-- <script src="../static/js/research_protocol.js"></script> -->
+</body>
+
+</html>

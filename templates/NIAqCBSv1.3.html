@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"
+    integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.js"
+    integrity="sha512-u9G5WcQXGaw9PgODOBfc5X5AjuWWJJKEUtuEfRAUPJf/SJZ40muyH7hOAFTlplwkEG3jC8PKurH/oSzQP975ng=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"
+    integrity="sha512-czERuOifK1fy7MssE4JJ7d0Av55NPiU2Ymv4R6F0mOGpyPUb9HkP9DcEeE+Qj9In7hWQHGg0CqH1ELgNBJXqGA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.js"
+    integrity="sha512-yUwPZS7XBCeFJsjU9IKl/bUCpWNnFv449g6/ieJKudXqqQu3550ZtEnONSiVNOEGu9Xhmz6rzMAtU2I06KEeRQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <!-- CSS only -->
+  <title>
+    NIA Q-CBS
+</title>
+  <!-- <script src="../static/js/add_research_protocol.js" language="JavaScript" type="text/javascript"></script>   -->
+  <link rel="stylesheet" href="../static/css/research_protocol.css">
+</head>
+
+<body>
+  <h1>NIA Cognitive and Behavioral Symptoms Questionnaire v1.3</h1></p>
+  <br><br><br>
+  <div class="form-container">
+    <div id="back-button">&#8592;</div>
+    <h3>Pleasereadall of the following questionsand select the answer that you agree with most.  Even if you are not pursuing any of the following activities, answer how you believe you would currently performcompared to the past.
+        <br>If you are uncertain on how to answer a question, simply continue to the following question. 
+        <br><br>Do not over think your answers, we will verify them when we meet.
+        <br>Select answers for both the severity and the duration of observed symptoms.
+        <br><br><b>It is important that you answer each question as best you can. 
+    <form action="/q-cbs" method="POST">
+      <div class="form-group" data-step="1">          
+        <label for="q1" id="q1_label">Do you have difficulties with your memory, speech, or ability to organizein general? </label>
+        <select name="q1" id="q1" class="form-control" required>
+            <option value="None">None</option>
+            <option value="Few">Few</option>
+           <option value="Mild">Mild</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Severe">Severe</option>
+            <option value="Very Severe">Very Severe</option>
+            <option value="Extreme">Extreme</option>
+        </select>
+        <label for="q1_dur" id="q1_dur_label">Symptom Duration</label>
+        <select name="q1_dur" id="q1_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="2">          
+        <label for="q2" id="q2_label">Do you have difficulties with movement or balance? </label>
+        <select name="q2" id="q2" class="form-control" required>
+            <option value="None">None</option>
+            <option value="Few">Few</option>
+           <option value="Mild">Mild</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Severe">Severe</option>
+            <option value="Very Severe">Very Severe</option>
+            <option value="Extreme">Extreme</option>
+        </select>
+        <label for="q2_dur" id="q2_dur_label">Symptom Duration</label>
+        <select name="q2_dur" id="q2_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="3">          
+        <label for="q3" id="q3_label">Do you have difficulties with your sleep or daytime alertness?</label>
+        <select name="q3" id="q3" class="form-control" required>
+            <option value="None">None</option>
+            <option value="Few">Few</option>
+           <option value="Mild">Mild</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Severe">Severe</option>
+            <option value="Very Severe">Very Severe</option>
+            <option value="Extreme">Extreme</option>
+        </select>
+        <label for="q3_dur" id="q3_dur_label">Symptom Duration</label>
+        <select name="q3_dur" id="q3_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="4">          
+        <label for="q4" id="q4_label">How fast did the first symptoms present themselves?</label>
+        <select name="q4" id="q4" class="form-control" required>
+            <option value="Suddenly">Suddenly</option>
+            <option value="Within a few days">Within a few days</option>
+           <option value="Gradually">Gradually</option>
+            <option value="More than 5 years">More than 5 years</option>
+        </select>
+        <label for="q4_dur" id="q4_dur_label">Symptom Duration</label>
+        <input name="q4_dur" id="q4_dur" type="integer" minlength="4" class="form-control" required>
+        </select>
+      </div>
+      <div class="form-group" data-step="5">          
+        <label for="q5" id="q5_label">Have syptoms worsened during the past 2-3 years?</label>
+        <select name="q5" id="q5" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+           <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+      </div>
+      </div>     
+       <div class="form-group" data-step="6">          
+        <label for="q6" id="q6_label">Are you concerned about these symptoms to require the opinion of a specialist?</label>
+        <select name="q6" id="q6" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+           <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+      </div>      
+      <div class="form-group" data-step="7">          
+        <label for="q7" id="q7_label">Compared to the past, is it more difficult to find personal items (keys, telephone, etc...)?  </label>
+        <select name="q7" id="q7" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q7_dur" id="q7_dur_label">Symptom Duration</label>
+        <select name="q7_dur" id="q7_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      
+      
+
+      <div class="form-group" data-step="8">          
+        <label for="q8" id="q8_label">Compared to the past, is it more difficult to remember appointments?</label>
+        <select name="q8" id="q8" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q8_dur" id="q8_dur_label">Symptom Duration</label>
+        <select name="q8_dur" id="q8_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="9">          
+        <label for="q9" id="q9_label">Compared to the past, is it more difficult to remember recent family events?</label>
+        <select name="q9" id="q9" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q9_dur" id="q9_dur_label">Symptom Duration</label>
+        <select name="q9_dur" id="q9_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="10">          
+        <label for="q10" id="q10_label">Compared to the past, is it more difficult to remember to pay bills on time?</label>
+        <select name="q10" id="q10" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q10_dur" id="q10_dur_label">Symptom Duration</label>
+        <select name="q10_dur" id="q10_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="11">          
+        <label for="q11" id="q11_label">Compared to the past, is it more difficult to remember details from conversations? </label>
+        <select name="q11" id="q11" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q11_dur" id="q11_dur_label">Symptom Duration</label>
+        <select name="q11_dur" id="q11_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="12">          
+        <label for="q12" id="q12_label">Compared to the past, is it more difficult to remember information without aides (calendars, notes, etc...)?</label>
+        <select name="q12" id="q12" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q12_dur" id="q12_dur_label">Symptom Duration</label>
+        <select name="q12_dur" id="q12_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="13">          
+        <label for="q13" id="q13_label">Compared to the past, is it more difficult to remember names of famous people (actors, athletes, etc.)?</label>
+        <select name="q13" id="q13" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q13_dur" id="q13_dur_label">Symptom Duration</label>
+        <select name="q13_dur" id="q13_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="14">          
+        <label for="q14" id="q14_label">Compared to the past, is it more difficult to articulate clearly?</label>
+        <select name="q14" id="q14" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q14_dur" id="q14_dur_label">Symptom Duration</label>
+        <select name="q14_dur" id="q14_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="15">          
+        <label for="q15" id="q15_label">Compared to the past, is it more difficult to speak in full sentences with proper grammar and without skipping words? </label>
+        <select name="q15" id="q15" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q15_dur" id="q15_dur_label">Symptom Duration</label>
+        <select name="q15_dur" id="q15_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="16">          
+        <label for="q16" id="q16_label">Compared to the past, is it more difficult tofind the right words when talking?</label>
+        <select name="q16" id="q16" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q16_dur" id="q16_dur_label">Symptom Duration</label>
+        <select name="q16_dur" id="q16_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="17">          
+        <label for="q17" id="q17_label">Compared to the past, is it more difficult to understand what others are saying without having to repeat oneself?</label>
+        <select name="q17" id="q17" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q17_dur" id="q17_dur_label">Symptom Duration</label>
+        <select name="q17_dur" id="q17_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="18">          
+        <label for="q18" id="q18_label">Compared to the past, is it more difficult to remain focused on a task?</label>
+        <select name="q18" id="q18" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q18_dur" id="q18_dur_label">Symptom Duration</label>
+        <select name="q18_dur" id="q18_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="19">          
+        <label for="q19" id="q19_label">Compared to the past, is it more difficult to organize non-daily activities (trips, purchases, etc.)?</label>
+        <select name="q19" id="q19" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q19_dur" id="q19_dur_label">Symptom Duration</label>
+        <select name="q19_dur" id="q19_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="20">          
+        <label for="q20" id="q20_label">Compared to the past, is it more difficult to  use electronics devices?</label>
+        <select name="q20" id="q20" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q20_dur" id="q20_dur_label">Symptom Duration</label>
+        <select name="q20_dur" id="q20_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="21">          
+        <label for="q21" id="q21_label">Compared to the past, is it more difficult to multitask? </label>
+        <select name="q21" id="q21" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q21_dur" id="q21_dur_label">Symptom Duration</label>
+        <select name="q21_dur" id="q21_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="22">          
+        <label for="q22" id="q22_label">Compared to the past, is it more difficult to solve problems or mental calculations at your usual speed? </label>
+        <select name="q22" id="q22" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q22_dur" id="q22_dur_label">Symptom Duration</label>
+        <select name="q22_dur" id="q22_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="23">          
+        <label for="q23" id="q23_label">Compared to the past, is it more difficult to predict the outcome of your decisions and actions? </label>
+        <select name="q23" id="q23" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q23_dur" id="q23_dur_label">Symptom Duration</label>
+        <select name="q23_dur" id="q23_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="24">          
+        <label for="q24" id="q24_label">Compared to the past, is it more difficult to pursue enjoyable social activities? </label>
+        <select name="q24" id="q24" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q24_dur" id="q24_dur_label">Symptom Duration</label>
+        <select name="q24_dur" id="q24_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="25">          
+        <label for="q25" id="q25_label">Compared to the past, is it more difficult to start new activities? </label>
+        <select name="q25" id="q25" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q25_dur" id="q25_dur_label">Symptom Duration</label>
+        <select name="q25_dur" id="q25_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="26">          
+        <label for="q26" id="q26_label">Compared to the past, is it more difficult to find your way while driving? </label>
+        <select name="q26" id="q26" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q26_dur" id="q26_dur_label">Symptom Duration</label>
+        <select name="q26_dur" id="q26_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="27">          
+        <label for="q27" id="q27_label">Compared to the past, is it more difficult to perceive moving objects? </label>
+        <select name="q27" id="q27" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q27_dur" id="q27_dur_label">Symptom Duration</label>
+        <select name="q27_dur" id="q27_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="28">          
+        <label for="q28" id="q28_label">Compared to the past, is it more difficult to estimate distances between objects</label>
+        <select name="q28" id="q28" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q28_dur" id="q28_dur_label">Symptom Duration</label>
+        <select name="q28_dur" id="q28_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="29">          
+        <label for="q29" id="q29_label">Compared to the past, is it more difficult to recognize familiar faces? </label>
+        <select name="q29" id="q29" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q29_dur" id="q29_dur_label">Symptom Duration</label>
+        <select name="q29_dur" id="q29_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="30">          
+        <label for="q30" id="q30_label">Compared to the past, is it more difficult to perceive things without visual hallucinations?</label>
+        <select name="q30" id="q30" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q30_dur" id="q30_dur_label">Symptom Duration</label>
+        <select name="q30_dur" id="q30_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="31">          
+        <label for="q31" id="q31_label">Compared to the past, is it more difficult to have daily bowel movements?</label>
+        <select name="q31" id="q31" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q31_dur" id="q31_dur_label">Symptom Duration</label>
+        <select name="q31_dur" id="q31_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="32">          
+        <label for="q32" id="q32_label">Compared to the past, is it more difficult to perceive smell? </label>
+        <select name="q32" id="q32" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q32_dur" id="q32_dur_label">Symptom Duration</label>
+        <select name="q32_dur" id="q32_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="33">          
+        <label for="q33" id="q33_label">Compared to the past, is it more difficult to stand up fast without getting dizzy?</label>
+        <select name="q33" id="q33" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q33_dur" id="q33_dur_label">Symptom Duration</label>
+        <select name="q33_dur" id="q33_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="34">          
+        <label for="q34" id="q34_label">Compared to the past, is it more difficult to follow the lines of a text while reading without skipping lines? </label>
+        <select name="q34" id="q34" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q34_dur" id="q34_dur_label">Symptom Duration</label>
+        <select name="q34_dur" id="q34_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="35">          
+        <label for="q35" id="q35_label">Compared to the past, is it more difficult to move fast and fluidly?</label>
+        <select name="q35" id="q35" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q35_dur" id="q35_dur_label">Symptom Duration</label>
+        <select name="q35_dur" id="q35_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="36">          
+        <label for="q36" id="q36_label">Compared to the past, is it more difficult to maintain your balance without falls?</label>
+        <select name="q36" id="q36" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q36_dur" id="q36_dur_label">Symptom Duration</label>
+        <select name="q36_dur" id="q36_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="37">          
+        <label for="q37" id="q37_label">Compared to the past, is it more difficult to perform fine finger movements (button clothes, use utensils, etc.)?</label>
+        <select name="q37" id="q37" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q37_dur" id="q37_dur_label">Symptom Duration</label>
+        <select name="q37_dur" id="q37_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="38">          
+        <label for="q38" id="q38_label">Compared to the past, is it more difficult to  relax without your arms jerking or moving uncontrollably while awake?</label>
+        <select name="q38" id="q38" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q38_dur" id="q38_dur_label">Symptom Duration</label>
+        <select name="q38_dur" id="q38_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="39">          
+        <label for="q39" id="q39_label">Compared to the past, is it more difficult to sleep without using the bathroom at night</label>
+        <select name="q39" id="q39" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q39_dur" id="q39_dur_label">Symptom Duration</label>
+        <select name="q39_dur" id="q39_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="40">          
+        <label for="q40" id="q40_label">Compared to the past, is it more difficult to remain awake during the day?</label>
+        <select name="q40" id="q40" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q40_dur" id="q40_dur_label">Symptom Duration</label>
+        <select name="q40_dur" id="q40_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="41">          
+        <label for="q41" id="q41_label">Compared to the past, is it more difficult to keep a regular sleep-wake schedule?</label>
+        <select name="q41" id="q41" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q41_dur" id="q41_dur_label">Symptom Duration</label>
+        <select name="q41_dur" id="q41_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="42">          
+        <label for="q42" id="q42_label">Compared to the past, is it more difficult to dream without flailing around or even falling out of bed?</label>
+        <select name="q42" id="q42" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q42_dur" id="q42_dur_label">Symptom Duration</label>
+        <select name="q42_dur" id="q42_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="43">          
+        <label for="q43" id="q43_label">Compared to the past, is it more difficult to understand problems faced by your family and friends?</label>
+        <select name="q43" id="q43" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q43_dur" id="q43_dur_label">Symptom Duration</label>
+        <select name="q43_dur" id="q43_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="44">          
+        <label for="q44" id="q44_label">Compared to the past, is it more difficult to control your impulses in social situations?</label>
+        <select name="q44" id="q44" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q44_dur" id="q44_dur_label">Symptom Duration</label>
+        <select name="q44_dur" id="q44_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="45">          
+        <label for="q45" id="q45_label">Compared to the past, is it more difficult to have others believe what you tell them?</label>
+        <select name="q45" id="q45" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q45_dur" id="q45_dur_label">Symptom Duration</label>
+        <select name="q45_dur" id="q45_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="46">          
+        <label for="q46" id="q46_label">Compared to the past, is it more difficult to control your desire for sweets or specific types of food? </label>
+        <select name="q46" id="q46" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q46_dur" id="q46_dur_label">Symptom Duration</label>
+        <select name="q46_dur" id="q46_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="47">          
+        <label for="q47" id="q47_label">Compared to the past, is it more difficult to deviate from your daily routine?</label>
+        <select name="q47" id="q47" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q47_dur" id="q47_dur_label">Symptom Duration</label>
+        <select name="q47_dur" id="q47_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="48">          
+        <label for="q48" id="q48_label">Compared to the past, is it more difficult to trust others?</label>
+        <select name="q48" id="q48" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q48_dur" id="q48_dur_label">Symptom Duration</label>
+        <select name="q48_dur" id="q48_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="49">          
+        <label for="q49" id="q49_label">Compared to the past, is it more difficult to remain calm without emotional outbursts?</label>
+        <select name="q49" id="q49" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q49_dur" id="q49_dur_label">Symptom Duration</label>
+        <select name="q49_dur" id="q49_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="50">          
+        <label for="q50" id="q50_label">Compared to the past, is it more difficult to not be anxious about day-to-day issues?</label>
+        <select name="q50" id="q50" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q50_dur" id="q50_dur_label">Symptom Duration</label>
+        <select name="q50_dur" id="q50_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="51">          
+        <label for="q51" id="q51_label">Compared to the past, is it more difficult to remain optimistic about the future?</label>
+        <select name="q51" id="q51" class="form-control" required>
+            <option value="No">No</option>
+            <option value="Barely">Barely</option>
+            <option value="Mildly">Mildy</option>
+            <option value="Moderately">Moderately</option>
+            <option value="Severely">Severely</option>
+            <option value="Very Severely">Very Severely</option>
+            <option value="Extremely">Extremely</option>
+        </select>
+        <label for="q51_dur" id="q51_dur_label">Symptom Duration</label>
+        <select name="q51_dur" id="q51_dur" class="form-control" required>
+         <option value="The past year">The past year</option>
+          <option value="2-3 years">2-3 years</option>
+         <option value="3-5 years">3-5 years</option>
+          <option value="More than 5 years">More than 5 years</option>
+        </select>
+      </div>
+      
+ 
+      /*make list dynamically based on answers to abovev questions, then make a select option(s) of which symptom started first (criteria must be mild or above on severity), then add question, when did this symptom(s) start?
+      */
+      <button type="submit" id="next-button" class="btn btn-primary">Next</button>
+    </form>
+    <a class="home btn btn-light m-2 d-block" role="button" href="/main_page_route">Return to home page.</a><br>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+  </script>
+  <!-- <script src="../static/js/research_protocol.js"></script> -->
+</body>
+
+</html>

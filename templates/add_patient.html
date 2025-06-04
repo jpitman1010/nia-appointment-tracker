@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"
+    integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.js"
+    integrity="sha512-u9G5WcQXGaw9PgODOBfc5X5AjuWWJJKEUtuEfRAUPJf/SJZ40muyH7hOAFTlplwkEG3jC8PKurH/oSzQP975ng=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"
+    integrity="sha512-czERuOifK1fy7MssE4JJ7d0Av55NPiU2Ymv4R6F0mOGpyPUb9HkP9DcEeE+Qj9In7hWQHGg0CqH1ELgNBJXqGA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.js"
+    integrity="sha512-yUwPZS7XBCeFJsjU9IKl/bUCpWNnFv449g6/ieJKudXqqQu3550ZtEnONSiVNOEGu9Xhmz6rzMAtU2I06KEeRQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- <script src="../static/js/calendar.js" language="JavaScript" type="text/javascript"></script>     --> -->
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
+  <link rel="stylesheet" href="../static/css/add_pt.css">
+  <title>
+    Add Patient
+  </title>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Please enter information to create a patient.</h1>
+    <form class="row g-3" action="/add_patient" method="POST">
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="MRN" aria-label="MRN" id="mrn" name="mrn">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="Greek First Name" aria-label="First Name Greek Letters"
+          name="Greek_fname">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="Greek Last Name" aria-label="Last Name Greek Letters"
+          name="Greek_lname">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="Latin First Name" aria-label="Latin First name"
+          name="fname">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="Latin Last Name" aria-label="Latin Last Name" name="lname">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="Date of Birth" aria-label="Date of Birth" name="dob">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" placeholder="Place of Birth" aria-label="Place of Birth"
+          name="place_of_birth">
+      </div>
+            <div class="col-12">
+        <input type="text" class="form-control" id="fathers_name" placeholder="Father's Name" aria-label="Father's Name"
+          name="fathers_name">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" id="mothers_name" placeholder="Mother's Name" aria-label="Mother's Name"
+          name="mothers_name">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" id="phone" placeholder="Phone" aria-label="Phone" name="phone">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" id="surrogate_phone" placeholder="Surrogate Phone"
+          aria-label="Surrogate Phone" name="surrogate_phone">
+      </div>
+      <div class="col-12">
+        <input type="text" class="form-control" id="surrogate_relationship" placeholder="Surrogate's Relationship"
+          aria-label="Surrogate's Relationship" name="surrogate_relationship">
+      </div>
+      <div class="col-12">
+
+        <input type="text" class="form-control" id="address" placeholder="Address" aria-label="Address" name="Address">
+      </div>
+      <div class="col-12">
+
+        <input type="email" class="form-control" id="inputEmail4" placeholder="Email" aria-label="Email" name="email">
+      </div>
+      <div class="col-12">
+
+        <input type="text" class="form-control" id="amka" placeholder="AMKA" aria-label="AMKA" name="amka">
+      </div>
+      <div class="col-12">
+        <select name="sex" id="sex"  class="form-control">
+          <option value="select">-----Select Sex------</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <select name="handedness" id="handedness" class="form-control">
+          <option value="select">-----Select Handedness------</option>
+          <option value="Right">Right</option>
+          <option value="Left">Left</option>
+          <option value="Ambidextrous">Ambidextrous</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <select name="race" id="race" class="form-control">
+          <option value="select">-----Select Race------</option>
+          <option value="White">White</option>
+          <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+          <option value="Black or African American">Black or African American</option>
+          <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+          <option value="Hispanic or Latino or Spanish Origin">Hispanic or Latino or Spanish Origin
+          </option>
+        </select>
+      </div>
+      <div class="col-12">
+        <select name="race_subgroup" id="race_subgroup" class="form-control">
+          <option value="select">-----Select Race Subgroup------</option>
+          <option value="European">European</option>
+          <option value="North American">North American</option>
+          <option value="South American">South American</option>
+          <option value="Asian">Asian</option>
+          <option value="African">African</option>
+          <option value="Austrailian">Austrailian</option>
+          </option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary d-block">Add Patient</button>
+      </div>
+    </form>
+    <div class="col-12 d-grid gap-2">
+      <a class="btn btn-primary m-2 d-block" role="button" href="/search">Search for Patient</a><br>
+      <a class="btn btn-light m-2 d-block" role="button" href="/main_page_route">Return to Home Page</a><br>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+  </script>
+</body>
+</html>

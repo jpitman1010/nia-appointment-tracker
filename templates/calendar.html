@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar</title>
+  <link rel="stylesheet" href="../static/css/nav-bar.css">
+
+  <link rel="stylesheet" href="../static/css/calendar.css">
+</head>
+
+<body>
+  <div>
+    <div class="navbar">
+      <a href="/main_page_route">Home</a>
+      <a class="btn btn-success m-2 d-block" role="button" href="/schedule_appointment_route">Schedule
+        Appointment</a>
+      <a class="btn btn-warning m-2 d-block" role="button" href="/change_appointment_status_route">Change Appointment
+        Status</a>
+      <a class="btn btn-primary m-2 d-block" role="button" href="/search">Search</a>
+      <a class="btn btn-dark m-2 d-block" role="button" href="/provider_schedule_route">Provider
+        Availability</a>
+      <div class="dropdown">
+        <button class="dropbtn">More
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+          <a class="btn btn-secondary m-2 d-block" role="button" href="/add_patient_route">Add Patient</a>
+          <a class="btn btn-info m-2 d-block" role="button" href="/add_research_protocol_route">Add Research
+            Protocol</a>
+          <a class="btn btn-light m-2 d-block" role="button" href="/reports_route">Run Report</a>
+          <a class="btn btn-light m-2 d-block" role="button" href="/patient_chart">Go To Patient Chart</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <script src="simple-calendar.js"></script>
+      <script>
+        window.onload = function () {
+          myCalendar.init();
+          console.log(myCalendar.privateVar);
+        };
+      </script>
+    </div>
+    <div class="col-8">
+      <div id="container">
+        <div id="header">
+          <div id="monthDisplay"></div>
+          <div>
+            <button id="backButton">Back</button>
+            <button id="nextButton">Next</button>
+          </div>
+        </div>
+
+        <div id="weekdays">
+          <div>Sunday</div>
+          <div>Monday</div>
+          <div>Tuesday</div>
+          <div>Wednesday</div>
+          <div>Thursday</div>
+          <div>Friday</div>
+          <div>Saturday</div>
+        </div>
+
+        <div id="calendar"></div>
+      </div>
+
+      <div id="newEventModal">
+        <h2>New Event</h2>
+
+        <input id="eventTitleInput" placeholder="Event Title" />
+
+        <button id="saveButton">Save</button>
+        <button id="cancelButton">Cancel</button>
+      </div>
+
+      <div id="deleteEventModal">
+        <h2>Event</h2>
+
+        <p id="eventText"></p>
+
+        <button id="deleteButton">Delete</button>
+        <button id="closeButton">Close</button>
+      </div>
+
+      <div id="modalBackDrop"></div>
+    </div>
+    <div class="col-4">
+
+    </div>
+  </div>
+
+  <script src="../static/js/calendar.js"></script>
+</body>
+
+</html>

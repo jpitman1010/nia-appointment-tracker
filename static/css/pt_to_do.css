@@ -1,0 +1,12 @@
+body {
+    background-image: url('../images/pexels-tirachard-kumtanom-733857.jpg');
+    -webkit-background-size: cover;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+}
+
+#title-header {
+    color: red;
+    text-align: center;
+}

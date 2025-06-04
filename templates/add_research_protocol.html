@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% block head %}
+<link rel="stylesheet" href="../static/css/research_protocol.css">
+<link rel="stylesheet" href="../static/css/add_research_protocol.css">
+{{ super() }}
+<title>
+  Protocol Builder
+</title>
+{% endblock %}
+{% block content %}
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>Visit Time</th>
+        <th>Visit Latency</th>
+        <th>Latency Min</th>
+        <th>Latency Max</th>
+        <th>Latency Metric</th>
+        <th>Encounter Type</th>
+        <th>Encounter Sequence</th>
+        <th>Duration of Encounter</th>
+        <th>Duration Metric</th>
+        <th>Provider Type</th>
+        <th>Provider(s)</th>
+        <th>Questionnaires</th>
+      </tr>
+    </thead>
+    <form action="/add_research_protocol">
+      <tbody>
+
+      </tbody>
+      <input type="submit">
+    </form>
+  </table>
+
+  <button id="add-row">+</button>
+  <br><br><br><br>
+
+</div>
+<div id="back-button" style="color:white">&#8592;</div>
+
+<script src="../static/js/add_research_protocol.js"></script>
+{% endblock %}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"
+    integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.js"
+    integrity="sha512-u9G5WcQXGaw9PgODOBfc5X5AjuWWJJKEUtuEfRAUPJf/SJZ40muyH7hOAFTlplwkEG3jC8PKurH/oSzQP975ng=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"
+    integrity="sha512-czERuOifK1fy7MssE4JJ7d0Av55NPiU2Ymv4R6F0mOGpyPUb9HkP9DcEeE+Qj9In7hWQHGg0CqH1ELgNBJXqGA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.js"
+    integrity="sha512-yUwPZS7XBCeFJsjU9IKl/bUCpWNnFv449g6/ieJKudXqqQu3550ZtEnONSiVNOEGu9Xhmz6rzMAtU2I06KEeRQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <!-- CSS only -->
+  <title>
+    FOSQ-10
+</title>
+  <!-- <script src="../static/js/add_research_protocol.js" language="JavaScript" type="text/javascript"></script>   -->
+  <link rel="stylesheet" href="../static/css/research_protocol.css">
+</head>
+
+<body>
+  <h1>(Reduced) Functional Outcomes of Sleep Questionnaire (FOSQ-10)</p>
+  <br><br><br>
+  <div class="form-container">
+    <div id="back-button">&#8592;</div>
+
+    <form action="/fosq-10" method="POST">
+      <div class="form-group" data-step="1">          
+        <label for="q1" id="q1_label">Do you have difficulty concentrating on the things you do because you are sleepy or tired?</label>
+        <select name="q1" id="q1" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="2">          
+        <label for="q2" id="q2_label">Do you generally have difficulty remembering things becauseyou are sleepy or tired?</label>
+        <select name="q2" id="q2" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="3">          
+        <label for="q3" id="q3_label">Do you have difficulty operating a motor vehicle for shortdistances (less than 100 miles) because you become sleepy?</label>
+        <select name="q3" id="q3" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="4">          
+        <label for="q4" id="q4_label">Do you have difficulty operating a motor vehicle for longdistances (greater than 100 miles) because you become sleepy?</label>
+        <select name="q4" id="q4" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="5">          
+        <label for="q5" id="q5_label">Do you have difficulty visiting your family or friends in their home because you become sleepy or tired?</label>
+        <select name="q5" id="q5" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>
+      </div>     
+       <div class="form-group" data-step="6">          
+        <label for="q6" id="q6_label">Has your relationship with family, friends or work colleagues been affected because you are sleepy or tired? </label>
+        <select name="q6" id="q6" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>      
+      <div class="form-group" data-step="7">          
+        <label for="q7" id="q7_label">Do you have difficulty watching a movie or video because you become sleepy or tired? </label>
+        <select name="q7" id="q7" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>      
+      <div class="form-group" data-step="8">          
+        <label for="q8" id="q8_label">Do you have difficulty being as active as you want to be in the evening because you are sleepy or tired? </label>
+        <select name="q8" id="q8" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>     
+       <div class="form-group" data-step="9">          
+        <label for="q9" id="q9_label">Do you have difficulty being as active as you want to be in the morning because you are sleepy or tired? </label>
+        <select name="q9" id="q9" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+         <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+      </div>
+      <div class="form-group" data-step="10">          
+        <label for="q10" id="q10_label">Has your mood been affected because you are sleepy or tired? </label>
+        <select name="q10" id="q10" class="form-control" required>
+          <option value="1">Yes, extreme</option>
+          <option value="2">Yes, moderate</option>
+          <option value="3">Yes, a little</option>
+          <option value="4">No</option>
+        </select>
+
+      <button type="submit" id="next-button" class="btn btn-primary">Next</button>
+    </form>
+    <a class="home btn btn-light m-2 d-block" role="button" href="/main_page_route">Return to home page.</a><br>
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+  </script>
+  <!-- <script src="../static/js/research_protocol.js"></script> -->
+</body>
+
+</html>
