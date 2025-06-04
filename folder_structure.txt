@@ -1,0 +1,164 @@
+.
+├── .gitignore
+├── .vscode
+│   └── settings.json
+├── calendar
+│   ├── auth.py
+│   └── outlook.py
+├── crud
+│   ├── __init__.py
+│   ├── appointment.py
+│   ├── clinician.py
+│   ├── encounter.py
+│   ├── generic.py
+│   ├── patient.py
+│   ├── research.py
+│   └── staff.py
+├── crud.py
+├── folder_structure.txt
+├── main.py
+├── models
+│   └── models.py
+├── README.md
+├── requirements.txt
+├── search
+│   └── search.py
+├── secrets.sh
+├── seed.py
+├── server.py
+├── server2.py
+├── static
+│   ├── css
+│   │   ├── add_pt.css
+│   │   ├── add_research_protocol.css
+│   │   ├── business-dataViews.css
+│   │   ├── business.css
+│   │   ├── calendar.css
+│   │   ├── nav-bar.css
+│   │   ├── pt_to_do.css
+│   │   ├── reports.css
+│   │   ├── research_protocol.css
+│   │   ├── samples.css
+│   │   ├── search.css
+│   │   └── style.css
+│   ├── images
+│   │   ├── pexels-rafael-guajardo-604684.jpg
+│   │   ├── pexels-tirachard-kumtanom-733857.jpg
+│   │   └── scheduling_images
+│   │       ├── calendar.png
+│   │       ├── client.png
+│   │       ├── data_server.png
+│   │       ├── h1.png
+│   │       ├── h2.png
+│   │       ├── h3.png
+│   │       ├── h4.png
+│   │       ├── icon_calculator.png
+│   │       ├── icon_calendar.png
+│   │       ├── icon_cargo.png
+│   │       ├── icon_chemicals.png
+│   │       ├── icon_clock.png
+│   │       ├── icon_danger.png
+│   │       ├── icon_delivery.png
+│   │       ├── icon_documents.png
+│   │       ├── icon_fish.png
+│   │       ├── icon_home.png
+│   │       ├── icon_map.png
+│   │       ├── icon_person.png
+│   │       ├── icon_print.png
+│   │       ├── icon_share.png
+│   │       ├── icon_statistics.png
+│   │       ├── icon_stop.png
+│   │       ├── icon_time.png
+│   │       ├── icon_warning.png
+│   │       ├── icon1.png
+│   │       ├── icon10.png
+│   │       ├── icon11.png
+│   │       ├── icon12.png
+│   │       ├── icon13.png
+│   │       ├── icon14.png
+│   │       ├── icon15.png
+│   │       ├── icon2.png
+│   │       ├── icon3.png
+│   │       ├── icon4.png
+│   │       ├── icon5.png
+│   │       ├── icon6.png
+│   │       ├── icon7.png
+│   │       ├── icon8.png
+│   │       ├── icon9.png
+│   │       ├── icons8-checkmark-32.png
+│   │       ├── icons8-delete-32.png
+│   │       ├── icons8-edit-32.png
+│   │       ├── icons8-trash-can-32.png
+│   │       ├── network_server.png
+│   │       ├── question.png
+│   │       ├── screenshots
+│   │       │   ├── Activities.png
+│   │       │   ├── Chat.png
+│   │       │   ├── DomInspector.png
+│   │       │   ├── FlipMatch.png
+│   │       │   ├── Observatories.png
+│   │       │   ├── ServerLoad.png
+│   │       │   ├── SimpleBrowser.png
+│   │       │   ├── TemperatureLog.png
+│   │       │   └── WorldPopulation.png
+│   │       ├── treeicon1.png
+│   │       ├── treeicon2.png
+│   │       └── web_server.png
+│   └── js
+│       ├── add_research_protocol.js
+│       ├── calendar.js
+│       ├── common-collections.js
+│       ├── common-ui.js
+│       ├── common.js
+│       ├── controls.js
+│       ├── CRUD.js
+│       ├── dataviews.js
+│       ├── drawing.js
+│       ├── jspack-vsdoc.js
+│       ├── login.js
+│       ├── participants.js
+│       ├── pt_to_do.js
+│       ├── reports.js
+│       ├── research_protocol.js
+│       ├── samples.js
+│       ├── scheduler.js
+│       ├── search.js
+│       ├── states.js
+│       └── status.js
+├── templates
+│   ├── add_appointment.html
+│   ├── add_patient.html
+│   ├── add_research_protocol.html
+│   ├── add_to_research_protocol.html
+│   ├── appointment_slots.html
+│   ├── calendar.html
+│   ├── change_appointment_status.html
+│   ├── CRUD.html
+│   ├── demographics.html
+│   ├── encounter_type.html
+│   ├── ess.html
+│   ├── fosq-10.html
+│   ├── fss.html
+│   ├── gad7.html
+│   ├── index.html
+│   ├── isi.html
+│   ├── login.html
+│   ├── main_page.html
+│   ├── new_protocol_info.html
+│   ├── NIAqCBSv1.3.html
+│   ├── patient_chart.html
+│   ├── patient_options.html
+│   ├── provider_schedule.html
+│   ├── reports.html
+│   ├── scheduler.html
+│   ├── search.html
+│   ├── staff_registration.html
+│   └── test.html
+├── unused_code_so_far.txt
+├── uploads
+│   └── test_research_protocol.xls
+└── utils
+    ├── fuzzy_search_utils.py
+    └── utility.py
+
+15 directories, 147 files

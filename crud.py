@@ -18,7 +18,6 @@ def create_staff(email, password, fname, lname, role, enabled):
 
     return staff
 
-
 def get_staff_id(email):
     """Return the staff object by ID"""
 
@@ -412,7 +411,6 @@ def schedule_appointment(mrn, provider, appointment_scheduled_start, appointment
     db.session.commit()
 
     return schedule_appointment
-
 
 def get_to_do_list(mrn):
     """get a to do list for the patient, includes completed and incomplete items to complete for 

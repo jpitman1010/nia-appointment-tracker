@@ -48,7 +48,6 @@ def search_staff(db: Session, query: str):
 def get_staff_by_email(db: Session, email: str):
     return db.query(Staff).filter_by(email=email).first()
 
-
 def get_staff_id(db: Session, email: str):
     result = db.query(Staff.id).filter_by(email=email).first()
     return result[0] if result else None

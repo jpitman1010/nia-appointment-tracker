@@ -304,7 +304,6 @@ class QuestionnaireResponse(db.Model):
     def __repr__(self):
         return f"<QuestionnaireResponse for {self.mrn} on {self.created_date}>"
 
-
 class Response(db.Model):
     __tablename__ = "response"
     # Minimal data units — rely on parent audit trail for tracking
