@@ -1,3 +1,26 @@
+# 🚫 Do not track sensitive or unused files
+secrets.sh
 .code_not_used_yet
 helper.txt
-secrets.sh
+
+# ⚙️ Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+
+# ⚠️ Virtual environments
+venv/
+env/
+
+# 🧹 VS Code config files
+.vscode/
+
+# 🍏 macOS system files
+.DS_Store
+
+# 🗂 SQLite / logs / temporary DBs
+*.log
+*.sqlite3
+*.db
