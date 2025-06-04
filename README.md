@@ -1,111 +1,127 @@
 # NIA Appointment Tracker
 
-## Overview
+## Project Overview
 
-This application tracks patient appointments, provider schedules, research study participation, and questionnaire responses, with full GDPR-compliant auditing and Outlook calendar integration.
+This is the NIA Appointment Tracker, a comprehensive system for managing patient appointments, clinical encounters, research studies, and questionnaires. It includes GDPR-compliant audit trails, integrated Outlook calendar scheduling, and flexible questionnaire management.
 
-## Features
+---
 
-- Patient and provider management
-- Appointment scheduling with Outlook sync
-- Research study tracking with dynamic fields
-- Questionnaire management (e.g., ESS, FSS)
-- Full audit history and soft-deletion for GDPR compliance
+## Project Structure
 
-## Requirements
+.
+├── .gitignore
+├── .vscode
+│   └── settings.json
+├── calendar
+│   ├── auth.py
+│   └── outlook.py
+├── crud
+│   ├── init.py
+│   ├── appointment.py
+│   ├── clinician.py
+│   ├── encounter.py
+│   ├── generic.py
+│   ├── patient.py
+│   ├── research.py
+│   └── staff.py
+├── crud.py
+├── main.py
+├── models
+│   └── models.py
+├── README.md
+├── requirements.txt
+├── search
+│   └── search.py
+├── secrets.sh
+├── seed.py
+├── server.py
+├── server2.py
+├── static
+│   ├── css
+│   ├── images
+│   └── js
+├── templates
+├── uploads
+└── utils
+├── fuzzy_search_utils.py
+└── utility.py
 
-- Python 3.7+
+yaml
+Copy
+
+---
+
+## Setup and Installation
+
+### Prerequisites
+
+- Python 3.9+
 - PostgreSQL database
-- Flask
-- SQLAlchemy + SQLAlchemy-Continuum
-- Microsoft Graph API setup for Outlook integration
+- Virtual environment recommended
 
-## Installation
+### Installation
 
-### 1. Clone the repository
+1. Clone the repository:
 
 ```bash
-git clone <repo-url>
-cd NIA_Appointment_Tracker
-```
+git clone https://github.com/jpitman1010/nia-appointment-tracker.git
+cd nia-appointment-tracker
+Create and activate a virtual environment:
 
-### 2. Create virtual environment and activate it
-
-```bash
+bash
+Copy
 python3 -m venv venv
-source venv/bin/activate
-```
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
 
-### 3. Install dependencies
+Install dependencies:
 
-```bash
+bash
+Copy
 pip install -r requirements.txt
-```
+Setup database URI in your environment or config file.
 
-### 4. Set up secrets
+Run database migrations and seed initial data (instructions coming soon).
 
-Create a `secrets.sh` file for environment variables like Azure credentials and DB URI. Example:
+Start the Flask app:
 
-```bash
-export FLASK_APP=server.py
-export DB_URI=postgresql:///NIA_Appointment_Tracker
-export MS_CLIENT_ID=your_id_here
-export MS_CLIENT_SECRET=your_secret_here
-export MS_TENANT_ID=your_tenant_here
-export MS_USER_EMAIL=info@nioa.gr
-```
-
-###I will provide local file for you to use, remove this instrcution for future.
-
-Run:
-
-```bash
-source secrets.sh
-```
-
-### 5. Initialize the database
-
-```bash
-python3
->>> from models import db, connect_to_db
->>> from server import app
->>> connect_to_db(app)
->>> db.create_all()
-```
-
-### 6. Enable history tables for versioning
-
-If using Alembic, run:
-
-```bash
-alembic revision --autogenerate -m "Initial versioned tables"
-alembic upgrade head
-```
-
-Otherwise, raw SQL setup instructions can be provided.
-
-## Development Notes
-
-- Soft deletes (`deleted`, `deleted_by`, `deleted_at`) replace actual record deletion.
-- Versioned fields (`created_by`, `updated_by`, etc.) ensure full audit trail.
-- GDPR compliance features implement Articles 5, 9, and 30 explicitly.
-- History tables are automatically maintained by `sqlalchemy-continuum`.
-
-## Outlook Integration
-
-- Requires MS Graph App Registration with delegated permissions.
-- Uses headless token-based access to a shared calendar.
-- File: `outlook.py` handles scheduling and availability.
-
-## Running the App
-
-```bash
+bash
+Copy
 flask run
+Features
+Patient demographic management with GDPR audit and soft-deletion
+
+Appointment scheduling integrated with Microsoft Outlook calendar
+
+Research study management and dynamic questionnaires
+
+Staff and provider management with access controls
+
+Full audit trail on all sensitive data changes (versioning with SQLAlchemy-Continuum)
+
+Usage Notes
+All deletions are soft deletions with audit info for GDPR compliance.
+
+Audit history tables must be initialized (see Alembic migration instructions).
+
+Outlook integration uses Microsoft Graph API for calendar events.
+
+Front-end assets are in static/ and templates/.
+
+Utility functions are in utils/.
+
+Contribution Guidelines
+Follow PEP8 and project style.
+
+Document any database schema changes.
+
+Write tests for new features.
+
+Use feature branches and pull requests.
+
+License
+MIT License
+
+Contact
+For questions or support, please contact Julie Pitman via GitHub.
 ```
-
-## Future Work
-
-- Admin dashboard
-- Fine-grained permission control
-- Email reminders and SMS integration
-- Consent audit export tools
