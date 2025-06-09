@@ -2,96 +2,127 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Calendar</title>
-  <link rel="stylesheet" href="../static/css/nav-bar.css">
-
-  <link rel="stylesheet" href="../static/css/calendar.css">
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
+  <style>
+    #provider-select {
+      margin-bottom: 15px;
+      width: 300px;
+    }
+  </style>
 </head>
 
 <body>
-  <div>
-    <div class="navbar">
-      <a href="/main_page_route">Home</a>
-      <a class="btn btn-success m-2 d-block" role="button" href="/schedule_appointment_route">Schedule
-        Appointment</a>
-      <a class="btn btn-warning m-2 d-block" role="button" href="/change_appointment_status_route">Change Appointment
-        Status</a>
-      <a class="btn btn-primary m-2 d-block" role="button" href="/search">Search</a>
-      <a class="btn btn-dark m-2 d-block" role="button" href="/provider_schedule_route">Provider
-        Availability</a>
-      <div class="dropdown">
-        <button class="dropbtn">More
-          <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content">
-          <a class="btn btn-secondary m-2 d-block" role="button" href="/add_patient_route">Add Patient</a>
-          <a class="btn btn-info m-2 d-block" role="button" href="/add_research_protocol_route">Add Research
-            Protocol</a>
-          <a class="btn btn-light m-2 d-block" role="button" href="/reports_route">Run Report</a>
-          <a class="btn btn-light m-2 d-block" role="button" href="/patient_chart">Go To Patient Chart</a>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <script src="simple-calendar.js"></script>
-      <script>
-        window.onload = function () {
-          myCalendar.init();
-          console.log(myCalendar.privateVar);
-        };
-      </script>
-    </div>
-    <div class="col-8">
-      <div id="container">
-        <div id="header">
-          <div id="monthDisplay"></div>
-          <div>
-            <button id="backButton">Back</button>
-            <button id="nextButton">Next</button>
-          </div>
-        </div>
+  <h1>Calendar</h1>
 
-        <div id="weekdays">
-          <div>Sunday</div>
-          <div>Monday</div>
-          <div>Tuesday</div>
-          <div>Wednesday</div>
-          <div>Thursday</div>
-          <div>Friday</div>
-          <div>Saturday</div>
-        </div>
+  <label for="provider-select">Select Providers:</label>
+  <select id="provider-select" multiple></select>
 
-        <div id="calendar"></div>
-      </div>
+  <div id="calendar"></div>
 
-      <div id="newEventModal">
-        <h2>New Event</h2>
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
 
-        <input id="eventTitleInput" placeholder="Event Title" />
+  <script>
+    document.addEventListener( 'DOMContentLoaded', function () {
+      const providerSelect = document.getElementById( 'provider-select' );
+      const calendarEl = document.getElementById( 'calendar' );
 
-        <button id="saveButton">Save</button>
-        <button id="cancelButton">Cancel</button>
-      </div>
+      // Initialize FullCalendar
+      const calendar = new FullCalendar.Calendar( calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 600,
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: [] // empty for now, will add events later
+      } );
 
-      <div id="deleteEventModal">
-        <h2>Event</h2>
+      calendar.render();
 
-        <p id="eventText"></p>
+      // Fetch providers and populate multi-select dropdown
+      fetch( '/api/providers' )
+        .then( response => response.json() )
+        .then( providers => {
+          providers.forEach( provider => {
+            const option = document.createElement( 'option' );
+            option.value = provider.id;
+            option.textContent = `${provider.fname} ${provider.lname}`;
+            providerSelect.appendChild( option );
+          } );
+        } );
 
-        <button id="deleteButton">Delete</button>
-        <button id="closeButton">Close</button>
-      </div>
+      document.addEventListener( 'DOMContentLoaded', function () {
+        const providerSelect = document.getElementById( 'provider-select' );
+        const calendarEl = document.getElementById( 'calendar' );
 
-      <div id="modalBackDrop"></div>
-    </div>
-    <div class="col-4">
+        // Store provider colors to assign consistently
+        const providerColors = {};
+        const colorPalette = [ '#FF5733', '#33C1FF', '#33FF57', '#FF33A8', '#FFC300',
+          '#8E44AD'
+        ]; // Add more if needed
 
-    </div>
-  </div>
+        // Initialize FullCalendar
+        const calendar = new FullCalendar.Calendar( calendarEl, {
+          initialView: 'dayGridMonth',
+          height: 600,
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          },
+          events: []
+        } );
 
-  <script src="../static/js/calendar.js"></script>
+        calendar.render();
+
+        // Fetch providers and populate dropdown
+        fetch( '/api/providers' )
+          .then( response => response.json() )
+          .then( providers => {
+            providers.forEach( ( provider, index ) => {
+              const option = document.createElement( 'option' );
+              option.value = provider.id;
+              option.textContent = `${provider.fname} ${provider.lname}`;
+              providerSelect.appendChild( option );
+              // Assign color for each provider
+              providerColors[ provider.id ] = colorPalette[ index % colorPalette.length ];
+            } );
+          } );
+
+        // Fetch and load events for selected providers
+        function loadEvents() {
+          const selectedProviderIds = Array.from( providerSelect.selectedOptions ).map( opt => opt.value );
+          if ( selectedProviderIds.length === 0 ) {
+            calendar.removeAllEvents();
+            return;
+          }
+
+          const params = new URLSearchParams();
+          selectedProviderIds.forEach( id => params.append( 'provider_ids[]', id ) );
+
+          fetch( `/api/appointments?${params.toString()}` )
+            .then( response => response.json() )
+            .then( events => {
+              calendar.removeAllEvents();
+              events.forEach( event => {
+                // Assign provider color
+                event.color = providerColors[ event.providerId ] || '#3788d8';
+                calendar.addEvent( event );
+              } );
+            } );
+        }
+
+        // Listen for provider selection changes
+        providerSelect.addEventListener( 'change', loadEvents );
+      } );
+
+    } );
+  </script>
 </body>
 
 </html>

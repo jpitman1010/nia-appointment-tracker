@@ -83,6 +83,8 @@ Setup database URI in your environment or config file.
 
 Run database migrations and seed initial data (instructions coming soon).
 
+---
+
 Start the Flask app:
 
 bash
@@ -124,4 +126,83 @@ MIT License
 
 Contact
 For questions or support, please contact Julie Pitman via GitHub.
+```
+
+### Setup Database
+```from the root directory run bash:```
+./setup.sh
+
+```Make sure setup.sh has execute permission:
+```
+bash
+chmod +x setup.sh
+
+```Notes:
+1. Adjust the connection user in psycopg2.connect() if your local superuser is different from postgres.  
+2. This script creates a database named nia_appointment_tracker and a user admin with password admin1234!  The password can be changed later for security purposes, this will just be used with initial setup.
+```
+
+
+
+### Managing Dependencies (`requirements.txt`)
+
+Over time, your project may accumulate unnecessary or missing packages in the `requirements.txt`. To keep dependencies clean and accurate:
+
+### Using `prune_requirements.py` Script
+
+1. Place the provided `prune_requirements.py` script in your project root.
+
+2. Run the script to analyze:
+
+   ```bash
+   python prune_requirements.py --project-dir=. --requirements=requirements.txt
+   ```
+
+---
+
+## Database Migrations with Alembic
+
+To manage database schema changes safely and consistently, this project uses **Alembic**, a lightweight database migration tool for SQLAlchemy.
+
+### Installation
+
+Add Alembic to your environment if not already installed:
+
+```bash
+pip install alembic
+
+#Initializing Alembic
+#Initialize Alembic in your project root (run once):
+
+bash
+#Copy
+alembic init alembic
+This creates an alembic folder with configuration files and a versions directory for migration scripts.
+
+Configure alembic.ini and alembic/env.py:
+
+Update the sqlalchemy.url in alembic.ini with your database connection string (e.g., postgresql://user:password@localhost/dbname).
+
+Modify env.py to import your db metadata for autogeneration (example):
+
+python
+Copy
+from models.models import db
+target_metadata = db.metadata
+Creating Migrations
+When you update your models:
+
+bash
+Copy
+alembic revision --autogenerate -m "Describe your changes"
+Alembic will generate a migration script in alembic/versions/.
+
+Applying Migrations
+Apply the migration to your database:
+
+bash
+Copy
+alembic upgrade head
+
+
 ```

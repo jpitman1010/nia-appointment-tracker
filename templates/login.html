@@ -1,32 +1,48 @@
-{% extends "index.html" %}
-{% block head %}
-<link rel="stylesheet" href="../static/css/style.css">
-{{ super() }}
-<title>Login</title>
-{% endblock %}
-</head>
-{% block content %}
-<div id="login" class="form-container">
-  <h1 class="header">Log In</h1>
-  <br>
-  <form method="post" action="/login_form">
-    <div id="email" class="form-group" data-step="1">
-      <label for="email-input">Enter Your Email</label>
-      <input type="text" class="form-control" id="email-input" name="email-input">
-    </div>
-    <div id="password" class="form-group final" data-step="2">
-      <label for="password-input">Enter Your Password</label>
-      <input type="password" id="password-input" class="form-control" name="password-input">
-    </div>
-    <p id="error-message"></p>
-    <button type="submit" id="next-button" class="btn btn-primary">Next</button>
-  </form>
-  <div id="back-button">&#8592;</div>
-  <div class="info-section">
-    <p>Don't have an account yet?</p>
-    <a href="/staff_registration_route">Register as New User</a>
-  </div>
-</div>
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
 
-<script src="../static/js/login.js"></script>
-{% endblock %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - NIA Appointment Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-light">
+
+  <div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+      <h3 class="mb-4 text-center">Login</h3>
+
+      {% if error %}
+      <div class="alert alert-danger" role="alert">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required
+            autofocus />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
+        </div>
+
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="remember" name="remember" />
+          <label class="form-check-label" for="remember">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

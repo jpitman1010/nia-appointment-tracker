@@ -4,6 +4,9 @@ import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Enum
 from sqlalchemy_continuum import make_versioned, versioning_manager
+from sqlalchemy.dialects.postgresql import JSON  # Make sure to import this for JSON support
+
+
 
 # Enable SQLAlchemy-Continuum versioning for GDPR compliance
 make_versioned(user_cls=None)
@@ -99,14 +102,26 @@ class Encounter(db.Model):
     encounter_duration = db.Column(db.Integer)
     duration_metric = db.Column(db.String)
     encounter_type = db.Column(db.String)
+
+    note_text = db.Column(db.Text)  # Raw full clinical note text
+    structured_note = db.Column(JSON, default={})  # Parsed JSON structure for searching
+    pdf_path = db.Column(db.String)  # File path to generated PDF (optional)
+
     deleted = db.Column(db.Boolean, default=False)
     deleted_by = db.Column(db.String)
     deleted_at = db.Column(db.DateTime)
+
     created_by = db.Column(db.String)
     updated_by = db.Column(db.String)
     created_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
+    # Relationships
+    patient = db.relationship("Patient", backref="encounters")
+    provider = db.relationship("Provider", backref="encounters")
+
+    def __repr__(self):
+        return f"<Encounter ID={self.id}, Patient={self.patient_id}, Provider={self.provider_id}, Type={self.encounter_type}>"
 
 class ResearchStudy(db.Model):
     __tablename__ = "research_study"
@@ -275,12 +290,27 @@ class Question(db.Model):
     question_code = db.Column(db.String, nullable=False)
     display_text = db.Column(db.String, nullable=False)
     order = db.Column(db.Integer)
+    field_type = db.Column(db.String, nullable=False, default='text')  # e.g. text, radio, checkbox, number, select, textarea
 
     questionnaire = db.relationship("Questionnaire", backref="questions")
 
     def __repr__(self):
         return f"<Question {self.question_code}: {self.display_text[:30]}>"
 
+
+class QuestionOption(db.Model):
+    __tablename__ = "question_option"
+
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
+    option_text = db.Column(db.String, nullable=False)
+    option_value = db.Column(db.String)  # optional, for codes/values
+    order = db.Column(db.Integer)        # optional ordering for options
+
+    question = db.relationship("Question", backref="options")
+
+    def __repr__(self):
+        return f"<QuestionOption {self.option_text} for Question ID {self.question_id}>"
 
 class QuestionnaireResponse(db.Model):
     __tablename__ = "questionnaire_response"

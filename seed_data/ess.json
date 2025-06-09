@@ -1,0 +1,112 @@
+{
+    "name": "ESS",
+    "version": "v1.0",
+    "language": "en",
+    "questions": [
+      {
+        "question_code": "ess_q1",
+        "text": "Sitting and reading",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q2",
+        "text": "Watching TV",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q3",
+        "text": "Sitting inactive in a public place (e.g., a theater or a meeting)",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q4",
+        "text": "As a passenger in a car for an hour without a break",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q5",
+        "text": "Lying down to rest in the afternoon when circumstances permit",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q6",
+        "text": "Sitting and talking to someone",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q7",
+        "text": "Sitting quietly after lunch without alcohol",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      },
+      {
+        "question_code": "ess_q8",
+        "text": "In a car, while stopped for a few minutes in traffic",
+        "type": "scale",
+        "scale_min": 0,
+        "scale_max": 3,
+        "options": [
+          {"value": 0, "label": "No chance of dozing"},
+          {"value": 1, "label": "Slight chance of dozing"},
+          {"value": 2, "label": "Moderate chance of dozing"},
+          {"value": 3, "label": "High chance of dozing"}
+        ]
+      }
+    ]
+  }
+  

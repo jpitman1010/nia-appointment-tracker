@@ -1,137 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Staff Registration</title>
+  <style>
+    /* Simple modal styling */
+    #duplicate-check-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"
-    integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.js"
-    integrity="sha512-u9G5WcQXGaw9PgODOBfc5X5AjuWWJJKEUtuEfRAUPJf/SJZ40muyH7hOAFTlplwkEG3jC8PKurH/oSzQP975ng=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"
-    integrity="sha512-czERuOifK1fy7MssE4JJ7d0Av55NPiU2Ymv4R6F0mOGpyPUb9HkP9DcEeE+Qj9In7hWQHGg0CqH1ELgNBJXqGA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.js"
-    integrity="sha512-yUwPZS7XBCeFJsjU9IKl/bUCpWNnFv449g6/ieJKudXqqQu3550ZtEnONSiVNOEGu9Xhmz6rzMAtU2I06KEeRQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <!-- <script src="../static/js/calendar.js" language="JavaScript" type="text/javascript"></script>     --> -->
+    #duplicate-check-modal>div {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-  </script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-  </script>
-  <link rel="stylesheet" href="../static/css/style.css">
-  
-  <title>Register</title>
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
+
 <body>
-  <form action="/staff_registration" method="POST" enctype="multipart/form-data">
-  <div id="signup" class="form-container">
-    <h1>Register</h1><br>
-    <div id="email" class="form-group" data-step="1">
-      <label for="email-input">Enter your email</label>
-      <input type="text" id="email-input" class="form-control" name="email-input">
-    </div>
-    <div id="email-verification" class="form-group" data-step="2">
-      <label for="email-verification-input">Confirm Your Email</label>
-      <input type="text" id="email-verification-input" class="form-control">
-    </div>
-    <div id="password" class="form-group" data-step="3">
-      <p class="password-requirements"> 
-        Password cannot contain spaces.
-        Password must be at least 8 characters in length.
-        Password must contain at least 1 digit, 1 lower-case letter and 1 upper-case letter.
-        Password can use the following symbols: !, #, @, $, &.
-      </p>
-      <label for="password-input">Create A Password</label>
-      <input type="text" id="password-input" type="password" class="form-control" name="password-input">
-    </div>
+  <h1>Register New Staff Member</h1>
 
-    <div id="password-verification" class="form-group" data-step="4" >
-      <label for="password-verification-input">Confirm Your Password</label>
-      <input type="password" id="password-verification-input" class="form-control">
-      <p id="error-message"> </p>
-    </div>
-    <div id="fname" class="form-group" data-step="5">
-      <label for="fname-input">Enter your First Name</label>
-      <input type="text" id="fname-input" class="form-control" name="fname-input">
-    </div>
-    <div id="lname" class="form-group" data-step="6">
-      <label for="lname-input">Enter your Last Name</label>
-      <input type="text" id="lname-input" class="form-control" name="lname-input">
-    </div>
-    <div id="role" class="form-group" data-step="7">
-      <p class="password-requirements"> 
-        <h4>Type in one of the following roles:</h4><br>
-        Research Coordinator<br>
-        Administration<br>
-        PI<br>
-        Provider<br>
-        Sleep Technician<br>
-        Management<br>
-      </p>
-      <label for="role-input">Type in Role from list above.</label>
-      <input type="text" id="role-input" class="form-control" name="role-input">
-      <p id="role-error-message"> </p>
-    </div>
-    <!-- <div id="role" class="form-group final" data-step="7">
-      <label for="role-input">Select Your Role</label><br>
-      <select name="role" id="role-selected">
-        <option value="Blank"> -- Select Role -- </option>
-        <option value="Research Coordinator">Research Coordinator</option>
-        <option value="Provier">Provider</option>
-        <option value="PI">PI</option>
-        <option value="Sleep Technician"> Sleep Technician</option>
-        <option value="Administration">Administration</option>
-        <option value="Management">Management</option>
-      </select>
-    </div> -->
+  <form id="staff-registration-form">
+    <label for="fname">First Name:</label>
+    <input type="text" name="fname" id="fname" required />
 
-    <button id="next-button" class="btn btn-primary" >Next</button>
-    <div id="back-button">&#8592;</div>
-    <div class="info-section">
-      <p>Already have an account?
-        <a href="/">Log In</a>
-      </p>
+    <label for="lname">Last Name:</label>
+    <input type="text" name="lname" id="lname" required />
+
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required />
+
+    <label for="roles">Roles:</label>
+    <select name="roles" id="roles" multiple required>
+      <option value="Research Coordinator">Research Coordinator</option>
+      <option value="Administration">Administration</option>
+      <option value="PI">PI</option>
+      <option value="Provider">Provider</option>
+      <option value="Sleep Tech">Sleep Tech</option>
+      <option value="Management">Management</option>
+      <option value="Other">Other (please specify)</option>
+    </select>
+
+    <input type="text" name="other_role" id="other_role" placeholder="Specify other role" style="display:none;" />
+
+    <button type="submit" style="margin-top:20px;">Submit</button>
+  </form>
+
+  <!-- Duplicate check modal -->
+  <div id="duplicate-check-modal">
+    <div>
+      <p id="modal-message" style="margin-bottom:20px; font-weight:bold;"></p>
+      <button id="modal-confirm-btn" style="margin-right:10px; padding:10px 20px;">
+        Yes, update existing
+      </button>
+      <button id="modal-cancel-btn" style="padding:10px 20px;">
+        No, create new
+      </button>
     </div>
   </div>
-</form>
-  <script src="../static/js/login.js"></script>
 
-  <!-- <div class="form-container">
-    <div class="form-group">
-      <input type="text" id="email-input">
-    </div>
-    <div class="form-group">
-      <input type="text">
-    </div>
-    <div class="form-group">
-      <input type="text">
-    </div>
-    <div class="form-group">
-      <input type="text">
-    </div>
-    <div class="form-group">
-      <input type="text">
-    </div>
-  </div> -->
+  <script>
+    // Show/hide other_role input if "Other" selected
+    const rolesSelect = document.getElementById( 'roles' );
+    const otherRoleInput = document.getElementById( 'other_role' );
 
+    rolesSelect.addEventListener( 'change', ( e ) => {
+      if ( [ ...e.target.selectedOptions ].some( opt => opt.value === 'Other' ) ) {
+        otherRoleInput.style.display = 'block';
+        otherRoleInput.required = true;
+      } else {
+        otherRoleInput.style.display = 'none';
+        otherRoleInput.required = false;
+        otherRoleInput.value = '';
+      }
+    } );
+
+    // Modal elements
+    const modal = document.getElementById( 'duplicate-check-modal' );
+    const modalMessage = document.getElementById( 'modal-message' );
+    const confirmBtn = document.getElementById( 'modal-confirm-btn' );
+    const cancelBtn = document.getElementById( 'modal-cancel-btn' );
+
+    let pendingFormData = null;
+
+    // Simulate backend search for duplicate staff by email (replace with real fetch)
+    async function checkForDuplicateStaff( email ) {
+      // Placeholder: Replace with real API call to your backend's fuzzy search
+      // e.g., GET /api/staff/search?query=email
+      // For demo, returns fake match for "test@example.com"
+      if ( email.toLowerCase() === 'test@example.com' ) {
+        return {
+          id: 123,
+          fname: 'John',
+          lname: 'Doe',
+          email: 'test@example.com',
+          roles: [ 'Provider', 'PI' ]
+        };
+      }
+      return null;
+    }
+
+    document.getElementById( 'staff-registration-form' ).addEventListener( 'submit', async ( event ) => {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = {
+              fname: form.fname.value.trim(),
+              lname: form.lname.value.trim(),
+              email: form.email.value.trim(),
+              roles: [ ...form.roles.selectedOptions ].map( opt => opt.value === 'Other' ? form.other_role.value
+                .trim() : opt.value )
+            };
+
+            // Check for duplicate by email (can add more fields as needed)
+            async function checkForDuplicateStaff( email ) {
+              try {
+                const response = await fetch( `/api/staff/search?query=${encodeURIComponent(email)}` );
+                if ( !response.ok ) throw new Error( "Network response was not ok" );
+                const data = await response.json();
+                // Assume data is either an object with staff info or null
+                return data && data.length > 0 ? data[ 0 ] : null;
+              } catch ( error ) {
+                console.error( "Error checking duplicate staff:", error );
+                return null;
+              }
+            }
+
+            function submitNewStaff( data ) {
+              fetch( '/api/staff', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify( data ),
+                } )
+                .then( res => {
+                  if ( !res.ok ) throw new Error( "Failed to create staff" );
+                  return res.json();
+                } )
+                .then( created => {
+                  alert( `New staff member created: ${created.fname} ${created.lname}` );
+                  document.getElementById( 'staff-registration-form' ).reset();
+                  otherRoleInput.style.display = 'none';
+                } )
+                .catch( err => alert( err ) );
+            }
+
+            function updateExistingStaff( data ) {
+              // Assuming data contains an 'id' field for staff id
+              fetch( `/api/staff/${data.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify( data ),
+                } )
+                .then( res => {
+                  if ( !res.ok ) throw new Error( "Failed to update staff" );
+                  return res.json();
+                } )
+                .then( updated => {
+                  alert( `Staff member updated: ${updated.fname} ${updated.lname}` );
+                  document.getElementById( 'staff-registration-form' ).reset();
+                  otherRoleInput.style.display = 'none';
+                } )
+                .catch( err => alert( err ) );
+            }
+  </script>
 </body>
+
 </html>

@@ -1,28 +1,41 @@
 # staff.py
 
-from sqlalchemy.orm import Session
-from models import Staff
 from schemas import StaffCreate, StaffUpdate
 from crud.generic import search_entities
+from models.models import Staff, db
+from sqlalchemy.orm import Session
+from models import Staff
+from crud.generic import search_entities  # Your fuzzy search utility
 
+def search_staff(db: Session, query: str):
+    # Search staff by fname, lname, email with fuzzy logic
+    return search_entities(db.query(Staff), Staff, query, fields=["fname", "lname", "email"])
 
-def create_staff(db: Session, staff: StaffCreate):
-    db_staff = Staff(**staff.dict())
-    db.add(db_staff)
+def create_staff(db: Session, staff_data: dict):
+    """
+    Create and return a new staff member.
+    staff_data should be a dict with keys: email, password, fname, lname, role, enabled
+    """
+    staff = Staff(**staff_data)
+    db.add(staff)
     db.commit()
-    db.refresh(db_staff)
-    return db_staff
+    db.refresh(staff)
+    return staff
 
-
-def update_staff(db: Session, staff_id: int, staff_update: StaffUpdate):
-    db_staff = db.query(Staff).filter(Staff.id == staff_id).first()
-    if not db_staff:
+def update_staff(db: Session, staff_id: int, updates: dict):
+    """
+    Update staff info by id.
+    updates is a dict of field:value pairs to update.
+    """
+    staff = db.query(Staff).filter(Staff.id == staff_id).first()
+    if not staff:
         return None
-    for field, value in staff_update.dict(exclude_unset=True).items():
-        setattr(db_staff, field, value)
+    for key, value in updates.items():
+        if hasattr(staff, key):
+            setattr(staff, key, value)
     db.commit()
-    db.refresh(db_staff)
-    return db_staff
+    db.refresh(staff)
+    return staff
 
 
 def delete_staff(db: Session, staff_id: int):

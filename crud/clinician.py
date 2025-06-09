@@ -1,39 +1,54 @@
-# clinician.py
+# crud/clinician.py
 
-from models.models import Clinician, db
 from sqlalchemy.orm import Session
-from schemas import ClinicianCreate, ClinicianUpdate
-from crud.generic import search_entities
+from models import Provider
+from schemas import ProviderCreate, ProviderUpdate
+from utils import fuzzy_search_utils  # or wherever your fuzzy search function is
+from crud.generic import search_entities  # Assuming your search function is here
 
-def create_clinician(db: Session, clinician: ClinicianCreate):
-    db_clinician = Clinician(**clinician.dict())
-    db.add(db_clinician)
+
+def create_provider(db: Session, provider: ProviderCreate):
+    # Check for existing similar providers using fuzzy search on first and last name
+    query_str = f"{provider.fname} {provider.lname}"
+    existing = search_entities(db.query(Provider), Provider, query=query_str, fields=["fname", "lname"])
+    
+    if existing:
+        raise ValueError(f"A provider similar to '{provider.fname} {provider.lname}' already exists.")
+    
+    db_provider = Provider(**provider.dict())
+    db.add(db_provider)
     db.commit()
-    db.refresh(db_clinician)
-    return db_clinician
+    db.refresh(db_provider)
+    return db_provider
 
-def update_clinician(db: Session, clinician_id: int, clinician_update: ClinicianUpdate):
-    clinician = db.query(Clinician).filter(Clinician.id == clinician_id).first()
-    if not clinician:
+
+def update_provider(db: Session, provider_id: int, update_data: ProviderUpdate):
+    db_provider = db.query(Provider).filter(Provider.id == provider_id).first()
+    if not db_provider:
         return None
-    for field, value in clinician_update.dict(exclude_unset=True).items():
-        setattr(clinician, field, value)
+
+    for field, value in update_data.dict(exclude_unset=True).items():
+        setattr(db_provider, field, value)
     db.commit()
-    db.refresh(clinician)
-    return clinician
+    db.refresh(db_provider)
+    return db_provider
 
-def delete_clinician(db: Session, clinician_id: int):
-    clinician = db.query(Clinician).filter(Clinician.id == clinician_id).first()
-    if clinician:
-        db.delete(clinician)
+
+def delete_provider(db: Session, provider_id: int):
+    db_provider = db.query(Provider).filter(Provider.id == provider_id).first()
+    if db_provider:
+        db.delete(db_provider)
         db.commit()
-    return clinician
+    return db_provider
 
-def get_clinician_by_id(db: Session, clinician_id: int):
-    return db.query(Clinician).filter(Clinician.id == clinician_id).first()
 
-def get_all_clinicians(db: Session):
-    return db.query(Clinician).all()
+def get_provider_by_id(db: Session, provider_id: int):
+    return db.query(Provider).filter(Provider.id == provider_id).first()
 
-def search_clinicians(db: Session, query: str):
-    return search_entities(db.query(Clinician), Clinician, query, fields=["fname", "lname", "email", "specialty"])
+
+def get_all_providers(db: Session):
+    return db.query(Provider).all()
+
+
+def search_providers(db: Session, query: str):
+    return search_entities(db.query(Provider), Provider, query, fields=["fname", "lname", "email"])

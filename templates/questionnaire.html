@@ -1,0 +1,86 @@
+<!-- templates/questionnaire.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ questionnaire_name }}</title>
+    <script>
+        function submitForm() {
+            const form = document.getElementById( 'questionnaireForm' );
+            // You can add client-side validation here
+            form.submit();
+        }
+    </script>
+</head>
+
+<body>
+    <h1>{{ questionnaire_name }}</h1>
+    <form id="questionnaireForm" method="POST"
+        action="{{ url_for('submit_questionnaire', questionnaire_id=questionnaire_id) }}">
+        {% for question in questions %}
+        <div>
+            <label><strong>{{ question.display_text }}</strong></label><br />
+
+            {% if question.field_type == 'text' %}
+            <input type="text" name="q_{{ question.id }}" />
+
+            {% elif question.field_type == 'textarea' %}
+            <textarea name="q_{{ question.id }}"></textarea>
+
+            {% elif question.field_type == 'number' %}
+            <input type="number" name="q_{{ question.id }}" />
+
+            {% elif question.field_type == 'radio' %}
+            {% for option in question.options %}
+            <input type="radio" name="q_{{ question.id }}" value="{{ option.option_value or option.option_text }}" />
+            <label>{{ option.option_text }}</label><br />
+            {% endfor %}
+
+            {% elif question.field_type == 'checkbox' %}
+            {% for option in question.options %}
+            <input type="checkbox" name="q_{{ question.id }}" value="{{ option.option_value or option.option_text }}" />
+            <label>{{ option.option_text }}</label><br />
+            {% endfor %}
+
+            {% elif question.field_type == 'select' %}
+            <select name="q_{{ question.id }}">
+                {% for option in question.options %}
+                <option value="{{ option.option_value or option.option_text }}">{{ option.option_text }}</option>
+                {% endfor %}
+            </select>
+
+            {% else %}
+            <input type="text" name="q_{{ question.id }}" />
+            {% endif %}
+        </div>
+        <br />
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        function validateForm() {
+            let valid = true; {
+                %
+                for question in questions %
+            }
+            // Example: make required fields validation here if needed
+            // You can embed required info in question metadata and use it here
+            {
+                %
+                endfor %
+            }
+            return valid;
+        }
+
+        function submitForm() {
+            if ( validateForm() ) {
+                document.getElementById( 'questionnaireForm' ).submit();
+            } else {
+                alert( "Please complete all required fields." );
+            }
+        }
+    </script>
+</body>
+
+</html>
