@@ -4,10 +4,45 @@
 
 This is the NIA Appointment Tracker, a comprehensive system for managing patient appointments, clinical encounters, research studies, and questionnaires. It includes GDPR-compliant audit trails, integrated Outlook calendar scheduling, and flexible questionnaire management.
 
+Appointment scheduling integrated with Microsoft Outlook calendar
+
+Research study management and dynamic questionnaires
+
+Staff and provider management with access controls
+
+Full audit trail on all sensitive data changes (versioning with SQLAlchemy-Continuum)
+
+Usage Notes
+All deletions are soft deletions with audit info for GDPR compliance.
+
+Audit history tables must be initialized (see Alembic migration instructions).
+
+Outlook integration uses Microsoft Graph API for calendar events.
+
+Front-end assets are in static/ and templates/.
+
+Utility functions are in utils/.
+
+Contribution Guidelines
+Follow PEP8 and project style.
+
+Document any database schema changes.
+
+Write tests for new features.
+
+Use feature branches and pull requests.
+
+License
+MIT License
+
+Contact
+For questions or support, please contact Julie Pitman via GitHub.
+
 ---
 
 ## Project Structure
 
+```
 .
 ├── .gitignore
 ├── .vscode
@@ -45,11 +80,7 @@ This is the NIA Appointment Tracker, a comprehensive system for managing patient
 └── utils
 ├── fuzzy_search_utils.py
 └── utility.py
-
-yaml
-Copy
-
----
+```
 
 ## Setup and Installation
 
@@ -63,100 +94,74 @@ Copy
 
 1. Clone the repository:
 
-```bash
+````bash
 git clone https://github.com/jpitman1010/nia-appointment-tracker.git
 cd nia-appointment-tracker
 Create and activate a virtual environment:
 
-bash
-Copy
+```bash
 python3 -m venv venv
+````
+
+```bash
 source venv/bin/activate  # macOS/Linux
+```
+
+```bash
 venv\Scripts\activate     # Windows
+```
 
-Install dependencies:
+## Install dependencies:
 
-bash
-Copy
+```bash
 pip install -r requirements.txt
+```
+
 Setup database URI in your environment or config file.
 
-Run database migrations and seed initial data (instructions coming soon).
+Run database migrations and seed initial data.
 
 ---
 
-Start the Flask app:
+### Start the Flask app:
 
-bash
-Copy
+```bash
 flask run
+```
+
 Features
 Patient demographic management with GDPR audit and soft-deletion
 
-Appointment scheduling integrated with Microsoft Outlook calendar
-
-Research study management and dynamic questionnaires
-
-Staff and provider management with access controls
-
-Full audit trail on all sensitive data changes (versioning with SQLAlchemy-Continuum)
-
-Usage Notes
-All deletions are soft deletions with audit info for GDPR compliance.
-
-Audit history tables must be initialized (see Alembic migration instructions).
-
-Outlook integration uses Microsoft Graph API for calendar events.
-
-Front-end assets are in static/ and templates/.
-
-Utility functions are in utils/.
-
-Contribution Guidelines
-Follow PEP8 and project style.
-
-Document any database schema changes.
-
-Write tests for new features.
-
-Use feature branches and pull requests.
-
-License
-MIT License
-
-Contact
-For questions or support, please contact Julie Pitman via GitHub.
-```
-
 ### Setup Database
-```from the root directory run bash:```
+
+from the root directory run bash:
+
+```bash
 ./setup.sh
-
-```Make sure setup.sh has execute permission:
 ```
-bash
+
+Make sure setup.sh has execute permission:
+
+```bash
 chmod +x setup.sh
-
-```Notes:
-1. Adjust the connection user in psycopg2.connect() if your local superuser is different from postgres.  
-2. This script creates a database named nia_appointment_tracker and a user admin with password admin1234!  The password can be changed later for security purposes, this will just be used with initial setup.
 ```
 
+### Notes:
 
+1. Adjust the connection user in psycopg2.connect() if your local superuser is different from postgres.
+2. This script creates a database named nia_appointment_tracker and a user admin with password admin1234! The password can be changed later for security purposes, this will just be used with initial setup.
 
-### Managing Dependencies (`requirements.txt`)
+## Managing Dependencies (`requirements.txt`)
 
 Over time, your project may accumulate unnecessary or missing packages in the `requirements.txt`. To keep dependencies clean and accurate:
 
-### Using `prune_requirements.py` Script
+## Using `prune_requirements.py` Script
 
-1. Place the provided `prune_requirements.py` script in your project root.
+Run the script to analyze:
 
-2. Run the script to analyze:
-
-   ```bash
-   python prune_requirements.py --project-dir=. --requirements=requirements.txt
-   ```
+```bash
+python prune_requirements.py --project-dir=. --requirements=requirements.txt
+```
 
 ---
 
@@ -170,39 +175,37 @@ Add Alembic to your environment if not already installed:
 
 ```bash
 pip install alembic
+```
 
 #Initializing Alembic
 #Initialize Alembic in your project root (run once):
 
-bash
-#Copy
+```bash
 alembic init alembic
+```
+
 This creates an alembic folder with configuration files and a versions directory for migration scripts.
 
-Configure alembic.ini and alembic/env.py:
+### Configure alembic.ini and alembic/env.py:
 
 Update the sqlalchemy.url in alembic.ini with your database connection string (e.g., postgresql://user:password@localhost/dbname).
 
 Modify env.py to import your db metadata for autogeneration (example):
 
-python
-Copy
+python:
 from models.models import db
 target_metadata = db.metadata
 Creating Migrations
 When you update your models:
 
-bash
-Copy
+```bash
 alembic revision --autogenerate -m "Describe your changes"
-Alembic will generate a migration script in alembic/versions/.
+```
 
-Applying Migrations
+### Alembic will generate a migration script in alembic/versions/.
+
 Apply the migration to your database:
 
-bash
-Copy
+```bash
 alembic upgrade head
-
-
 ```
