@@ -2,19 +2,17 @@
 
 import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Enum
+from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Enum, Table
 from sqlalchemy_continuum import make_versioned, versioning_manager
 from sqlalchemy.dialects.postgresql import JSON  # Make sure to import this for JSON support
 
 
-
 # Enable SQLAlchemy-Continuum versioning for GDPR compliance
 make_versioned(user_cls=None)
-
 # Initialize DB
 # ===========================================
 db = SQLAlchemy()
-versioning_manager.init(db)
+
 
 def connect_to_db(flask_app, db_uri='postgresql:///NIA_Appointment_Tracker', echo=True):
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
@@ -31,15 +29,42 @@ def connect_to_db(flask_app, db_uri='postgresql:///NIA_Appointment_Tracker', ech
 # Models with GDPR-Compliant Audit Fields
 # ===========================================
 
+# Association table between Staff and Roles
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True, nullable=False)  # e.g. 'physician'
+    description = Column(String(255), nullable=True)
+
+    # Permission flags - add or remove as needed
+    can_prescribe = Column(Boolean, default=False)
+    can_order_tests = Column(Boolean, default=False)
+    can_manage_users = Column(Boolean, default=False)
+    can_view_billing = Column(Boolean, default=False)
+    can_view_research_data = Column(Boolean, default=False)
+    can_schedule_appointments = Column(Boolean, default=False)
+    # Add more as you identify...
+
+    def __repr__(self):
+        return f"<Role {self.name}>"
+
+# Staff model:
+
+staff_roles = db.Table(
+    'staff_roles',
+    db.Column('staff_id', db.Integer, db.ForeignKey('staff.id'), primary_key=True),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'), primary_key=True)
+)
+
 class Staff(db.Model):
     __tablename__ = "staff"
     __versioned__ = {}
-    # GDPR: Includes audit trail fields for Article 30 compliance
 
     id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String, nullable=False)
     lname = db.Column(db.String, nullable=False)
-    role = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     enabled = db.Column(db.Boolean, default=True)
@@ -51,9 +76,14 @@ class Staff(db.Model):
     created_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
-    def __repr__(self):
-        return f"<Staff ID={self.id}, Name={self.fname} {self.lname}, Role={self.role}, Email={self.email}>"
+    # Replace role string with relationship
+    roles = db.relationship('Role', secondary=staff_roles, backref=db.backref('staff_members', lazy='dynamic'))
 
+    #roles = db.relationship('Role', secondary=staff_roles, backref='staff_members')
+
+    def __repr__(self):
+        role_names = [role.name for role in self.roles]
+        return f"<Staff ID={self.id}, Name={self.fname} {self.lname}, Roles={role_names}, Email={self.email}>"
 
 class Provider(db.Model):
     __tablename__ = "provider"

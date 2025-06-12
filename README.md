@@ -117,9 +117,16 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
+
+### Database Setup
 Setup database URI in your environment or config file.
 
-Run database migrations and seed initial data.
+Before running migrations or starting the app, ensure your PostgreSQL server is running and execute:
+
+```bash
+python setup_database.py
+```
+This script will create the PostgreSQL user and database if they do not already exist.
 
 ---
 

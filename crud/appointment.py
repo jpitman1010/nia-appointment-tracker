@@ -2,7 +2,7 @@
 # ---- CRUD operations for Appointment Scheduling and Integration with Outlook ----
 
 from sqlalchemy.orm import Session
-from models import Appointment_Scheduling_and_Status
+from models.models import Appointment_Scheduling_and_Status
 from schemas import AppointmentCreate, AppointmentUpdate
 from outlook import schedule_if_available, get_outlook_events
 from datetime import datetime, timedelta

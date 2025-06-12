@@ -9,14 +9,30 @@ from sqlalchemy.orm import Session
 from models.models import Patient, Staff, Appointment, Patient, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, db
 from crud.patient import search_patients, create_patient
 from crud.staff import search_staff, create_staff, update_staff
-from search.search import search_entities
+from search.search import Search, GreekAwareSearch
 import os
 from dotenv import load_dotenv
+from auth.decorators import roles_required
 
 load_dotenv()  # Loads variables from .env or environment
 
+def connect_to_db(app):
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://admin:admin1234!@localhost:5432/nia_appointment_tracker')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key-for-dev')  # fallback for dev
+connect_to_db(app)  # Make sure this runs before other stuff
+
+
+# Set database URI from environment variable
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://admin:admin1234!@localhost:5432/nia_appointment_tracker')
+
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+#db.init_app(app)
 
 # Blueprint for Staff API routes
 staff_bp = Blueprint('staff_api', __name__, url_prefix='/api/staff')
@@ -25,6 +41,28 @@ questionnaire_bp = Blueprint('questionnaire_api', __name__, url_prefix='/api/que
 
 
 # --- Authentication and Session Management ---
+def load_user_permissions(staff):
+    permissions = {
+        "can_prescribe": False,
+        "can_order_tests": False,
+        "can_manage_users": False,
+        "can_view_billing": False,
+        "can_view_research_data": False,
+        "can_schedule_appointments": False,
+    }
+
+    role_names = []
+    for role in staff.roles:
+        role_names.append(role.name)
+        permissions["can_prescribe"] |= role.can_prescribe
+        permissions["can_order_tests"] |= role.can_order_tests
+        permissions["can_manage_users"] |= role.can_manage_users
+        permissions["can_view_billing"] |= role.can_view_billing
+        permissions["can_view_research_data"] |= role.can_view_research_data
+        permissions["can_schedule_appointments"] |= role.can_schedule_appointments
+
+    return role_names, permissions
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -33,21 +71,42 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if verify_user(email, password):
-            session['user_email'] = email
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('dashboard'))
+        staff = Staff.query.filter_by(email=email).first()
+        if staff and verify_password(password, staff.password):  # your existing password check logic
+            role_names, permissions = load_user_permissions(staff)
+            session['user_id'] = staff.id
+            session['roles'] = role_names
+            session['permissions'] = permissions
+            flash("Logged in successfully!", "success")
+            return redirect(url_for('dashboard'))  # or wherever
+
         else:
             error = 'Invalid email or password.'
 
     return render_template('login.html', error=error)
 
 
-def verify_user(email, password):
-    # Replace with real user verification logic (hashed password check etc)
-    if email == 'admin@example.com' and password == 'admin1234!':
-        return True
-    return False
+
+def verify_password(input_password, stored_password):
+    # TODO: Replace this with hashed password verification
+    return input_password == stored_password
+
+@app.route('/admin')
+@roles_required('admin')  # Only users with 'admin' role can access this route
+def admin_panel():
+    return "Welcome to Admin Panel!"
+
+
+@app.route('/staff')
+@roles_required('admin', 'physician', 'clinician', 'research_coordinator')  
+# Users with any of these roles can access this route
+def staff_page():
+    return "Welcome staff!"
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template('403.html'), 403
+
 
 
 # --- Staff API Endpoints ---
@@ -185,11 +244,11 @@ def check_patient_duplicate():
 
     session: Session = db.session
 
-    duplicates = search_entities(
+    duplicates = (
         session.query(Patient),
         Patient,
-        query=search_query,
-        fields=["mrn", "dob", "fname", "lname", "greek_fname", "greek_lname", "phone", "email"]
+        query==search_query,
+        fields==["mrn", "dob", "fname", "lname", "greek_fname", "greek_lname", "phone", "email"]
     )
 
     if duplicates:

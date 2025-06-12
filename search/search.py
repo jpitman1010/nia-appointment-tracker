@@ -1,6 +1,6 @@
 # search/search.py
 
-from utils import fuzzy_match, is_greek
+from utils.fuzzy_search_utils import fuzzy_match
 
 class Search:
     """

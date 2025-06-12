@@ -1,16 +1,16 @@
 # crud/clinician.py
 
 from sqlalchemy.orm import Session
-from models import Provider
+from models.models import Provider
 from schemas import ProviderCreate, ProviderUpdate
 from utils import fuzzy_search_utils  # or wherever your fuzzy search function is
-from crud.generic import search_entities  # Assuming your search function is here
+from crud.generic import search_entity  # Assuming your search function is here
 
 
 def create_provider(db: Session, provider: ProviderCreate):
     # Check for existing similar providers using fuzzy search on first and last name
     query_str = f"{provider.fname} {provider.lname}"
-    existing = search_entities(db.query(Provider), Provider, query=query_str, fields=["fname", "lname"])
+    existing = search_entity(db.query(Provider), Provider, query=query_str, fields=["fname", "lname"])
     
     if existing:
         raise ValueError(f"A provider similar to '{provider.fname} {provider.lname}' already exists.")
@@ -51,4 +51,4 @@ def get_all_providers(db: Session):
 
 
 def search_providers(db: Session, query: str):
-    return search_entities(db.query(Provider), Provider, query, fields=["fname", "lname", "email"])
+    return search_providers(db.query(Provider), Provider, query, fields=["fname", "lname", "email"])

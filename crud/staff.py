@@ -1,26 +1,37 @@
 # staff.py
 
 from schemas import StaffCreate, StaffUpdate
-from crud.generic import search_entities
+from crud.generic import search_entity
 from models.models import Staff, db
 from sqlalchemy.orm import Session
-from models import Staff
-from crud.generic import search_entities  # Your fuzzy search utility
+from models.models import Staff
+from crud.generic import search_entity  # Your fuzzy search utility
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 def search_staff(db: Session, query: str):
     # Search staff by fname, lname, email with fuzzy logic
-    return search_entities(db.query(Staff), Staff, query, fields=["fname", "lname", "email"])
+    return search_entity(db.query(Staff), Staff, query, fields=["fname", "lname", "email"])
 
-def create_staff(db: Session, staff_data: dict):
-    """
-    Create and return a new staff member.
-    staff_data should be a dict with keys: email, password, fname, lname, role, enabled
-    """
-    staff = Staff(**staff_data)
-    db.add(staff)
-    db.commit()
-    db.refresh(staff)
+def create_staff(db, email, password, fname='', lname='', role='', enabled=True):
+    hashed_password = generate_password_hash(password)
+    staff = Staff(
+        email=email,
+        password=hashed_password,
+        fname=fname,
+        lname=lname,
+        role=role,
+        enabled=enabled
+    )
+    db.session.add(staff)
+    db.session.commit()
     return staff
+
+def verify_user(db, email, password):
+    staff = db.query(Staff).filter(Staff.email == email).first()
+    if staff and check_password_hash(staff.password, password):
+        return True
+    return False
 
 def update_staff(db: Session, staff_id: int, updates: dict):
     """
@@ -55,7 +66,7 @@ def get_all_staff(db: Session):
 
 
 def search_staff(db: Session, query: str):
-    return search_entities(db.query(Staff), Staff, query, fields=["fname", "lname", "email", "department"])
+    return search_entity(db.query(Staff), Staff, query, fields=["fname", "lname", "email", "department"])
 
 
 def get_staff_by_email(db: Session, email: str):
@@ -78,10 +89,3 @@ def get_staff_name(db: Session, email: str):
     return None
 
 
-def check_if_valid_user(db: Session, email: str):
-    return db.query(Staff).filter_by(email=email).first() is not None
-
-
-def password_check(db: Session, email: str, password: str):
-    staff = db.query(Staff).filter_by(email=email, password=password).first()
-    return staff is not None
