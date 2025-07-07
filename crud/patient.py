@@ -1,6 +1,9 @@
 from models.models import Patient, db
 from utils.fuzzy_search_utils import generalized_fuzzy_search
 import pandas as pd
+from flask_login import current_user
+from datetime import datetime
+
 
 def search_patients(dem_df: pd.DataFrame, search_terms: dict, threshold: int = 75):
     """
@@ -20,6 +23,7 @@ def search_patients(dem_df: pd.DataFrame, search_terms: dict, threshold: int = 7
     """
     # Filter for exact matches on MRN, AMKA, DOB first to reduce candidate pool
     filtered_df = dem_df
+    
     if 'mrn' in search_terms and search_terms['mrn']:
         filtered_df = filtered_df[filtered_df['mrn'] == search_terms['mrn']]
         # If MRN found, return exact match immediately
@@ -50,7 +54,12 @@ def search_patients(dem_df: pd.DataFrame, search_terms: dict, threshold: int = 7
 
 def create_patient(mrn, fname, lname, greek_fname, greek_lname, dob, place_of_birth,
                    sex, handedness, race, race_subtype, fathers_name, mothers_name,
-                   phone, surrogate_phone, surrogate_relationship, address, email, amka):
+                   phone, surrogate_phone, surrogate_relationship, address, email, amka, created_by=None, updated_by=None):
+    
+    
+    created_by = getattr(current_user, 'email', 'system')
+    updated_by = getattr(current_user, 'email', 'system')
+   
     """Create and return a new patient."""
     patient = Patient(
         mrn=mrn,
@@ -71,7 +80,11 @@ def create_patient(mrn, fname, lname, greek_fname, greek_lname, dob, place_of_bi
         surrogate_relationship=surrogate_relationship,
         address=address,
         email=email,
-        amka=amka
+        amka=amka,
+        created_by=created_by,
+        updated_by=updated_by,
+        created_date=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
     db.session.add(patient)
     db.session.commit()
@@ -105,3 +118,34 @@ def check_if_patient_exists(lname, dob, mrn):
     return db.session.query(Patient).filter_by(
         lname=lname, dob=dob, mrn=mrn
     ).first() is not None
+
+def find_duplicate_patient(mrn=None, amka=None, fname=None, lname=None, dob=None):
+    """
+    Check if a patient exists with exact match on MRN or AMKA,
+    or exact match on fname, lname, and dob.
+
+    Returns:
+        Patient object if a duplicate found, else None.
+    """
+    query = db.session.query(Patient)
+
+    if mrn:
+        patient = query.filter(Patient.mrn == mrn).first()
+        if patient:
+            return patient
+
+    if amka:
+        patient = query.filter(Patient.amka == amka).first()
+        if patient:
+            return patient
+
+    if fname and lname and dob:
+        patient = query.filter(
+            Patient.fname == fname,
+            Patient.lname == lname,
+            Patient.dob == dob
+        ).first()
+        if patient:
+            return patient
+
+    return None

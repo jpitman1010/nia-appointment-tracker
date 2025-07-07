@@ -1,7 +1,7 @@
 # models.py
-from sqlalchemy_continuum import make_versioned, versioning_manager
+# from sqlalchemy_continuum import make_versioned, versioning_manager
 # Enable SQLAlchemy-Continuum versioning for GDPR compliance
-make_versioned(user_cls=None)
+# make_versioned(user_cls=None)
 
 import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -60,7 +60,7 @@ staff_roles = db.Table(
 
 class Staff(db.Model):
     __tablename__ = "staff"
-    __versioned__ = {}
+    # __versioned__ = {}
 
     id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String, nullable=False)
@@ -249,6 +249,7 @@ class Appointment(db.Model):
         return f"<Appointment ID={self.id}, Patient={self.patient_id}, Provider={self.provider_id}, Start={self.scheduled_start}>"
 
 
+
 class Patient(db.Model):
     __tablename__ = "patient"
     __versioned__ = {}
@@ -263,7 +264,7 @@ class Patient(db.Model):
     dob = db.Column(db.DateTime)
     place_of_birth = db.Column(db.String)
     sex = db.Column(Enum('Male', 'Female', 'Other', name='sex_enum'))
-    handedness = db.Column(Enum('Left', 'Right', 'Ambidextrous', name='hand_enum'))
+    handedness = db.Column(Enum('Left', 'Right', 'Ambidextrous', name='hand_enum'),nullable=True)
     race = db.Column(db.String)
     race_subtype = db.Column(db.String)
     fathers_name = db.Column(db.String)

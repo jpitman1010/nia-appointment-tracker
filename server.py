@@ -3,11 +3,11 @@ from flask import (
     session, flash, jsonify, abort, Blueprint
 )
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import Session
 
 from models.models import Patient, Staff, Appointment, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, db
-from crud.patient import search_patients, create_patient
+from crud.patient import search_patients, create_patient, find_duplicate_patient
 from crud.staff import search_staff, create_staff, update_staff
 from search.search import Search, GreekAwareSearch
 import os
@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 from auth.decorators import roles_required
 from werkzeug.security import check_password_hash
 import pandas as pd
+from flask_login import LoginManager
+
 
 template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'static')
@@ -22,6 +24,15 @@ static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend'
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 load_dotenv()  # Loads variables from .env or environment
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_for_dev')
+login_manager = LoginManager()
+login_manager.init_app(app)
+# Optional: set login view for redirects
+login_manager.login_view = 'login'  # your login route endpoint name
+
+# User loader callback so flask-login knows how to get a user by id
+@login_manager.user_loader
+def load_user(user_id):
+    return Staff.query.get(int(user_id))  # or your user model class
 
 
 def connect_to_db(app):
@@ -310,12 +321,17 @@ def check_patient_duplicate():
 
     session: Session = db.session
 
-    duplicates = (
-        session.query(Patient),
-        Patient,
-        query==search_query,
-        fields==["mrn", "dob", "fname", "lname", "greek_fname", "greek_lname", "phone", "email"]
-    )
+    duplicates = session.query(Patient).filter(
+        or_(
+            Patient.mrn == mrn,
+            Patient.amka == data.get('amka'),
+            and_(
+                Patient.fname == fname,
+                Patient.lname == lname,
+                Patient.dob == dob,
+            )
+        )
+    ).all()
 
     if duplicates:
         results = [{
@@ -337,49 +353,101 @@ def check_patient_duplicate():
 
 # --- Add Patient ---
 
-@app.route('/add_patient', methods=['GET', 'POST'])
-def add_patient():
-    if request.method == 'POST':
-        data = request.form
+@app.route('/api/add_patient', methods=['POST'])
+def api_add_patient():
+    data = request.get_json() or {}
 
-        required_fields = ['lname', 'greek_fname', 'greek_lname', 'dob', 'fathers_name', 'phone', 'email']
-        for field in required_fields:
-            if not data.get(field):
-                flash(f"Field {field} is required.")
-                return redirect(url_for('add_patient'))
+    # Conditional name requirement:
+    has_latin_name = data.get('fname') and data.get('lname')
+    has_greek_name = data.get('greek_fname') and data.get('greek_lname')
+    if not (has_latin_name or has_greek_name):
+        return jsonify({
+            'success': False,
+            'error': 'Must provide either Latin first and last name OR Greek first and last name.'
+        }), 400
 
-        email = data.get('email') or 'info@nioa.gr'  # default email if none given
+    required_fields = ['dob', 'fathers_name', 'phone']
+    missing_fields = [f for f in required_fields if not data.get(f)]
+    if missing_fields:
+        return jsonify({'success': False, 'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
 
-        mrn = generate_mrn(db.session)
+    # sex is required and must be one of the enum options
+    valid_sexes = ['Male', 'Female', 'Other']
+    sex = data.get('sex')
+    if sex not in valid_sexes:
+        return jsonify({'success': False, 'error': f"'sex' must be one of {valid_sexes}."}), 400
 
-        patient = create_patient(
-            mrn=mrn,
-            fname=data.get('fname'),
-            lname=data.get('lname'),
-            greek_fname=data.get('greek_fname'),
-            greek_lname=data.get('greek_lname'),
-            dob=data.get('dob'),
-            place_of_birth=data.get('place_of_birth'),
-            sex=data.get('sex'),
-            handedness=data.get('handedness'),
-            race=data.get('race'),
-            race_subtype=data.get('race_subtype'),
-            fathers_name=data.get('fathers_name'),
-            mothers_name=data.get('mothers_name'),
-            phone=data.get('phone'),
-            surrogate_phone=data.get('surrogate_phone'),
-            surrogate_relationship=data.get('surrogate_relationship'),
-            address=data.get('address'),
-            email=email,
-            amka=data.get('amka'),
-            created_by='current_user',  # TODO: replace with real logged-in user
-            updated_by='current_user'
+    try:
+        dob = datetime.strptime(data.get('dob'), '%Y-%m-%d')
+    except Exception:
+        return jsonify({'success': False, 'error': 'Invalid date format for dob. Use YYYY-MM-DD.'}), 400
+
+    email = data.get('email') or 'info@nioa.gr'
+    amka = data.get('amka')
+    # If no AMKA given, use MRN as AMKA after generation
+
+    mrn = generate_mrn(db.session)
+
+    # Check duplicates strictly
+    duplicates = db.session.query(Patient).filter(
+        or_(
+            Patient.mrn == mrn,
+            Patient.amka == amka if amka else None,
+            and_(
+                Patient.fname == data.get('fname'),
+                Patient.lname == data.get('lname'),
+                Patient.dob == dob
+            )
         )
+    ).all()
 
-        flash(f"Patient {patient.fname or ''} {patient.lname} added successfully with MRN {mrn}.")
-        return redirect(url_for('search_patient'))
+    if duplicates:
+        duplicate_info = [{
+            'id': p.id,
+            'mrn': p.mrn,
+            'fname': p.fname,
+            'lname': p.lname,
+            'dob': p.dob.strftime('%Y-%m-%d') if p.dob else None,
+            'amka': p.amka
+        } for p in duplicates]
 
-    return render_template('add_patient.html')
+        return jsonify({'success': False, 'error': 'Duplicate patient found', 'duplicates': duplicate_info}), 409
+
+    # Use MRN as AMKA if AMKA not provided
+    if not amka:
+        amka = mrn
+
+    handedness = data.get('handedness')
+    if handedness == '':
+        handedness = None
+
+    patient = create_patient(
+        mrn=mrn,
+        fname=data.get('fname'),
+        lname=data.get('lname'),
+        greek_fname=data.get('greek_fname'),
+        greek_lname=data.get('greek_lname'),
+        dob=dob,
+        place_of_birth=data.get('place_of_birth'),
+        sex=sex,
+        handedness=handedness,
+        race=data.get('race'),
+        race_subtype=data.get('race_subtype'),
+        fathers_name=data.get('fathers_name'),
+        mothers_name=data.get('mothers_name'),
+        phone=data.get('phone'),
+        surrogate_phone=data.get('surrogate_phone'),
+        surrogate_relationship=data.get('surrogate_relationship'),
+        address=data.get('address'),
+        email=email,
+        amka=amka,
+        created_by='current_user',  # Replace with actual user identity in your app
+        updated_by='current_user'
+    )
+
+    return jsonify({'success': True, 'message': f'Patient added with MRN {mrn}', 'patient_id': patient.id})
+
+
 
 @app.route('/api/providers', methods=['GET'])
 def get_providers():

@@ -3,6 +3,7 @@ annotated-types==0.7.0
 blinker==1.9.0
 click==8.2.1
 Flask==3.1.1
+Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
 fuzzywuzzy==0.18.0
 itsdangerous==2.2.0

@@ -132,8 +132,56 @@
       <!-- Add Patient Widget -->
       <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="30">
         <div class="grid-stack-item-content">
-          <h4>Add Patient</h4>
-          <p>Add/register a new patient here.</p>
+          <div id="add-patient-widget">
+            <h3>Add New Patient</h3>
+            <form id="add-patient-form">
+              <fieldset>
+                <legend>*Latin Name (required if Greek name not provided)</legend>
+                <label>First Name (Latin): <input type="text" name="fname" /></label><br />
+                <label>Last Name (Latin): <input type="text" name="lname" /></label><br />
+              </fieldset>
+
+              <fieldset>
+                <legend>*Greek Name (required if Latin name not provided)</legend>
+                <label>First Name (Greek): <input type="text" name="greek_fname" /></label><br />
+                <label>Last Name (Greek): <input type="text" name="greek_lname" /></label><br />
+              </fieldset>
+              <br /><br />
+              <label>*Date of Birth: <input type="date" name="dob" required /></label><br />
+              <label>*Sex:
+                <select name="sex" required>
+                  <option value="">--Select--</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label><br />
+              <label>*Father's Name: <input type="text" name="fathers_name" required /></label><br />
+              <label>*Phone: <input type="tel" name="phone" required /></label><br />
+              <label>*Email: <input type="email" name="email" /></label><br />
+              <label>*AMKA: <input type="text" name="amka" /></label><br />
+
+              <!-- Optional fields -->
+              <label>Place of Birth: <input type="text" name="place_of_birth" /></label><br />
+              <label>Handedness:
+                <select name="handedness">
+                  <option value="">--Select--</option>
+                  <option value="Left">Left</option>
+                  <option value="Right">Right</option>
+                  <option value="Ambidextrous">Ambidextrous</option>
+                </select>
+              </label><br />
+              <label>Race: <input type="text" name="race" /></label><br />
+              <label>Race Subtype: <input type="text" name="race_subtype" /></label><br />
+              <label>Mother's Name: <input type="text" name="mothers_name" /></label><br />
+              <label>Surrogate Phone: <input type="tel" name="surrogate_phone" /></label><br />
+              <label>Surrogate Relationship: <input type="text" name="surrogate_relationship" /></label><br />
+              <label>Address: <input type="text" name="address" /></label><br />
+
+              <button type="submit">Add Patient</button>
+            </form>
+            <div id="add-patient-result"></div>
+          </div>
         </div>
       </div>
 
@@ -208,6 +256,46 @@
       }
 
       document.getElementById( 'patient-results-table' ).style.display = patients.length ? 'table' : 'none';
+    } );
+  </script>
+  <script>
+    document.getElementById( 'add-patient-form' ).addEventListener( 'submit', async function ( e ) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries( new FormData( form ).entries() );
+
+      // Basic frontend validation for conditional names
+      if ( ( !data.fname || !data.lname ) && ( !data.greek_fname || !data.greek_lname ) ) {
+        document.getElementById( 'add-patient-result' ).textContent =
+          'Please provide either Latin first and last name OR Greek first and last name.';
+        return;
+      }
+
+      const resultDiv = document.getElementById( 'add-patient-result' );
+      resultDiv.textContent = 'Submitting...';
+
+      try {
+        const response = await fetch( '/api/add_patient', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify( data )
+        } );
+
+        const json = await response.json();
+        if ( json.success ) {
+          resultDiv.textContent = json.message;
+          form.reset();
+        } else if ( response.status === 409 ) {
+          resultDiv.innerHTML = `<b>Duplicate patient found:</b><br>${json.duplicates.map(d => 
+          `${d.fname} ${d.lname} (MRN: ${d.mrn}, DOB: ${d.dob}, AMKA: ${d.amka})`).join('<br>')}`;
+        } else {
+          resultDiv.textContent = `Error: ${json.error || 'Unknown error'}`;
+        }
+      } catch ( err ) {
+        resultDiv.textContent = 'Network error. Please try again.';
+      }
     } );
   </script>
 
