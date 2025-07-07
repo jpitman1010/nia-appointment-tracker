@@ -13,17 +13,26 @@ from search.search import Search, GreekAwareSearch
 import os
 from dotenv import load_dotenv
 from auth.decorators import roles_required
+from werkzeug.security import check_password_hash
 
+
+template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'templates')
+static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'static')
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 load_dotenv()  # Loads variables from .env or environment
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_for_dev')
+
 
 def connect_to_db(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://admin:admin1234!@localhost:5432/nia_appointment_tracker')
+    # If running tests, use TEST_DATABASE_URL, else use DATABASE_URL
+    if os.getenv('FLASK_ENV') == 'testing':
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TEST_DATABASE_URL')
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
-
-app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key-for-dev')  # fallback for dev
-connect_to_db(app)  # Make sure this runs before other stuff
 
 
 # Set database URI from environment variable
@@ -33,6 +42,7 @@ connect_to_db(app)  # Make sure this runs before other stuff
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #db.init_app(app)
+connect_to_db(app)
 
 # Blueprint for Staff API routes
 staff_bp = Blueprint('staff_api', __name__, url_prefix='/api/staff')
@@ -63,6 +73,11 @@ def load_user_permissions(staff):
 
     return role_names, permissions
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -85,11 +100,34 @@ def login():
 
     return render_template('login.html', error=error)
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     error = None
+#     if request.method == 'POST':
+#         email = request.form.get('email').strip()
+#         password = request.form.get('password')
+        
+#         staff = Staff.query.filter_by(email=email).first()
+#         print(f"Login attempt for email: {email}")
+#         if not staff:
+#             print("No user found with that email.")
+#             error = "Invalid email or password."
+#         else:
+#             print(f"User found: {staff.email}, stored hash: {staff.password[:20]}...")
+#             if verify_password(password, staff.password):
+#                 print("Password verified successfully.")
+#                 # proceed with login...
+#                 # redirect or session set here
+#                 return redirect(url_for('dashboard'))
+#             else:
+#                 print("Password verification failed.")
+#                 error = "Invalid email or password."
+    
+#     return render_template('login.html', error=error)
 
+def verify_password(input_password, stored_password_hash):
+    return check_password_hash(stored_password_hash, input_password)
 
-def verify_password(input_password, stored_password):
-    # TODO: Replace this with hashed password verification
-    return input_password == stored_password
 
 @app.route('/admin')
 @roles_required('admin')  # Only users with 'admin' role can access this route
@@ -186,10 +224,15 @@ app.register_blueprint(staff_bp)
 
 @app.route('/dashboard')
 def dashboard():
-    if 'user_email' not in session:
+
+    if 'user_id' not in session:
         flash('Please log in to access the dashboard.', 'warning')
         return redirect(url_for('login'))
     return render_template('dashboard.html')
+    # if 'user_email' not in session:
+    #     flash('Please log in to access the dashboard.', 'warning')
+    #     return redirect(url_for('login'))
+    # return render_template('dashboard.html')
 
 
 # --- Patient Search ---

@@ -66,7 +66,7 @@ class Staff(db.Model):
     fname = db.Column(db.String, nullable=False)
     lname = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
+    password = db.Column(db.String(255))
     enabled = db.Column(db.Boolean, default=True)
     deleted = db.Column(db.Boolean, default=False)
     deleted_by = db.Column(db.String)

@@ -5,12 +5,12 @@ from alembic import context
 import sys
 import os
 from dotenv import load_dotenv
+# Import your models and DB metadata
+from models.models import db
 
 # Insert your project root to sys.path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Import your models and DB metadata
-from models.models import db
 
 # Load .env variables
 load_dotenv()
