@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from models.models import Patient, Staff, Appointment, Patient, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, db
+from models.models import Patient, Staff, Appointment, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, db
 from crud.patient import search_patients, create_patient
 from crud.staff import search_staff, create_staff, update_staff
 from search.search import Search, GreekAwareSearch
@@ -14,7 +14,7 @@ import os
 from dotenv import load_dotenv
 from auth.decorators import roles_required
 from werkzeug.security import check_password_hash
-
+import pandas as pd
 
 template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'static')
@@ -237,26 +237,49 @@ def dashboard():
 
 # --- Patient Search ---
 
-@app.route('/search', methods=['GET'])
-def search_patient():
-    # Extract search parameters from query string
-    first_name = request.args.get('first_name')
-    last_name = request.args.get('last_name')
-    dob = request.args.get('dob')
-    mrn = request.args.get('mrn')
-    phone = request.args.get('phone')
-    email = request.args.get('email')
+@app.route('/api/patients', methods=['GET'])
+def api_patients():
+    search_terms = {
+        'mrn': request.args.get('mrn', default=None),
+        'greek_fname': request.args.get('greek_fname', default=None),
+        'greek_lname': request.args.get('greek_lname', default=None),
+        'fname': request.args.get('fname', default=None),
+        'lname': request.args.get('lname', default=None),
+        'dob': request.args.get('dob', default=None),
+        'phone': request.args.get('phone', default=None),
+        'email': request.args.get('email', default=None),
+        'amka': request.args.get('amka', default=None)
+    }
+    # Filter out empty values
+    search_terms = {k: v for k, v in search_terms.items() if v}
 
-    patients = search_patients(
-        first_name=first_name,
-        last_name=last_name,
-        dob=dob,
-        mrn=mrn,
-        phone=phone,
-        email=email
-    )
+    # Fetch all patients from DB
+    patients = db.session.query(Patient).all()
+    if not patients:
+        return jsonify([])
 
-    return render_template('search.html', patients=patients)
+    # Convert patients to DataFrame for fuzzy search
+    dem_df = pd.DataFrame([{
+        'id': p.id,
+        'mrn': p.mrn,
+        'greek_fname': p.greek_fname,
+        'greek_lname': p.greek_lname,
+        'fname': p.fname,
+        'lname': p.lname,
+        'dob': p.dob.strftime('%Y-%m-%d') if p.dob else None,
+        'phone': p.phone,
+        'email': p.email,
+        'amka': p.amka
+    } for p in patients])
+
+    # Call fuzzy search
+    results = search_patients(dem_df, search_terms)
+
+    # Return only matched rows as JSON
+    response = [row for score, row in results]
+
+    return jsonify(response)
+
 
 
 # --- Helper: Generate MRN ---

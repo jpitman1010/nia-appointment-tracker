@@ -46,39 +46,99 @@
   <div class="container">
     <h2>Welcome, {{ session['user_email'] }}</h2>
     <p>Drag and reposition widgets as you like.</p>
-
     <div class="grid-stack">
-      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="4" data-gs-y="4">
-        <div class="grid-stack-item-content">
-          <h4>Patient Search</h4>
-          <p>Search and view patient info here.</p>
-        </div>
-      </div>
-      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="4" data-gs-y="4">
-        <div class="grid-stack-item-content">
-          <h4>Add Patient</h4>
-          <p>Add/register a new patient here.</p>
-        </div>
-      </div>
+
       <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="0">
         <div class="grid-stack-item-content">
           <h4>Appointment Calendar</h4>
           <p>View your upcoming appointments here.</p>
         </div>
       </div>
-      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="0">
+
+      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="6">
         <div class="grid-stack-item-content">
           <h4>Questionnaire Summary</h4>
           <p>See latest questionnaire completions.</p>
         </div>
       </div>
-      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="0">
+
+      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="12">
         <div class="grid-stack-item-content">
           <h4>Send Questionnaire</h4>
           <p>Email a questionnaire to a patient.</p>
         </div>
       </div>
+
+      <!-- Patient Search Widget -->
+      <div class="grid-stack-item" data-gs-w="20" data-gs-h="12" data-gs-x="0" data-gs-y="18">
+        <div class="grid-stack-item-content">
+          <h4>Patient Search</h4>
+          <form id="patient-search-form" class="mb-3">
+            <div class="row g-2">
+              <div class="col-md-3">
+                <input type="text" id="search-mrn" class="form-control" placeholder="MRN" />
+              </div>
+              <div class="col-md-3">
+                <input type="text" id="search-greek-fname" class="form-control" placeholder="Greek First Name" />
+              </div>
+              <div class="col-md-3">
+                <input type="text" id="search-greek-lname" class="form-control" placeholder="Greek Last Name" />
+              </div>
+              <div class="col-md-3">
+                <input type="text" id="search-fname" class="form-control" placeholder="First Name" />
+              </div>
+              <div class="col-md-3">
+                <input type="text" id="search-lname" class="form-control" placeholder="Last Name" />
+              </div>
+              <div class="col-md-3">
+                <input type="date" id="search-dob" class="form-control" placeholder="Date of Birth" />
+              </div>
+              <div class="col-md-3">
+                <input type="text" id="search-phone" class="form-control" placeholder="Phone" />
+              </div>
+              <div class="col-md-3">
+                <input type="email" id="search-email" class="form-control" placeholder="Email" />
+              </div>
+              <div class="col-md-3">
+                <input type="text" id="search-amka" class="form-control" placeholder="AMKA" />
+              </div>
+              <div class="col-md-3 d-grid">
+                <button type="submit" class="btn btn-primary">Search</button>
+              </div>
+            </div>
+          </form>
+
+          <table class="table table-striped table-sm" id="patient-results-table" style="display:none;">
+            <thead>
+              <tr>
+                <th>MRN</th>
+                <th>Greek First Name</th>
+                <th>Greek Last Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>DOB</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>AMKA</th>
+              </tr>
+            </thead>
+            <tbody id="patient-results-body">
+              <!-- Search results will go here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add Patient Widget -->
+      <div class="grid-stack-item" data-gs-w="20" data-gs-h="6" data-gs-x="0" data-gs-y="30">
+        <div class="grid-stack-item-content">
+          <h4>Add Patient</h4>
+          <p>Add/register a new patient here.</p>
+        </div>
+      </div>
+
     </div>
+
   </div>
 
   <!-- Lodash and Gridstack JS -->
@@ -98,6 +158,59 @@
       } );
     } );
   </script>
+  <script>
+    document.getElementById( 'patient-search-form' ).addEventListener( 'submit', async function ( e ) {
+      e.preventDefault();
+
+      const params = new URLSearchParams( {
+        mrn: document.getElementById( 'search-mrn' ).value.trim(),
+        greek_fname: document.getElementById( 'search-greek-fname' ).value.trim(),
+        greek_lname: document.getElementById( 'search-greek-lname' ).value.trim(),
+        fname: document.getElementById( 'search-fname' ).value.trim(),
+        lname: document.getElementById( 'search-lname' ).value.trim(),
+        dob: document.getElementById( 'search-dob' ).value,
+        phone: document.getElementById( 'search-phone' ).value.trim(),
+        email: document.getElementById( 'search-email' ).value.trim(),
+        amka: document.getElementById( 'search-amka' ).value.trim()
+      } );
+
+      // Remove empty params
+      for ( const [ key, value ] of params.entries() ) {
+        if ( !value ) {
+          params.delete( key );
+        }
+      }
+
+      const response = await fetch( '/api/patients?' + params.toString() );
+      const patients = await response.json();
+
+      const tbody = document.getElementById( 'patient-results-body' );
+      tbody.innerHTML = '';
+
+      if ( patients.length === 0 ) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center">No patients found.</td></tr>`;
+      } else {
+        patients.forEach( p => {
+          tbody.innerHTML += `
+        <tr>
+          <td>${p.mrn || ''}</td>
+          <td>${p.greek_fname || ''}</td>
+          <td>${p.greek_lname || ''}</td>
+          <td>${p.fname || ''}</td>
+          <td>${p.lname || ''}</td>
+          <td>${p.dob || ''}</td>
+          <td>${p.email || ''}</td>
+          <td>${p.phone || ''}</td>
+          <td>${p.amka || ''}</td>
+        </tr>
+      `;
+        } );
+      }
+
+      document.getElementById( 'patient-results-table' ).style.display = patients.length ? 'table' : 'none';
+    } );
+  </script>
+
 </body>
 
 </html>

@@ -1,14 +1,14 @@
 # models.py
+from sqlalchemy_continuum import make_versioned, versioning_manager
+# Enable SQLAlchemy-Continuum versioning for GDPR compliance
+make_versioned(user_cls=None)
 
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Enum, Table
-from sqlalchemy_continuum import make_versioned, versioning_manager
 from sqlalchemy.dialects.postgresql import JSON  # Make sure to import this for JSON support
 
 
-# Enable SQLAlchemy-Continuum versioning for GDPR compliance
-make_versioned(user_cls=None)
 # Initialize DB
 # ===========================================
 db = SQLAlchemy()

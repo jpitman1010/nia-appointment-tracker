@@ -7,6 +7,17 @@ import os
 from dotenv import load_dotenv
 # Import your models and DB metadata
 from models.models import db
+from sqlalchemy_continuum import make_versioned
+
+make_versioned(user_cls=None)  # Enable versioning BEFORE importing models
+
+from models.models import db  # Now import models AFTER versioning is enabled
+
+target_metadata = db.metadata
+
+
+# after your metadata is loaded, create version tables if needed
+target_metadata = db.metadata
 
 # Insert your project root to sys.path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
