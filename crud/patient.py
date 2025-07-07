@@ -4,18 +4,48 @@ import pandas as pd
 
 def search_patients(dem_df: pd.DataFrame, search_terms: dict, threshold: int = 75):
     """
-    Search for patients using fuzzy matching.
+    Search for patients with mixed exact and fuzzy matching rules:
+    - MRN and AMKA exact match
+    - DOB exact match
+    - Latin and Greek first/last names fuzzy match
     
     Args:
-        dem_df (pd.DataFrame): The patient DataFrame.
-        search_terms (dict): Dictionary like {"first_name": "Elika", "last_name": "Papadopoulos"}
-        threshold (int): Fuzzy match threshold (default 75).
-
+        dem_df (pd.DataFrame): DataFrame of patients to search in.
+        search_terms (dict): Dictionary with any of the keys:
+            'mrn', 'amka', 'dob', 'fname', 'lname', 'greek_fname', 'greek_lname'.
+        threshold (int): Fuzzy match threshold for names (default 75).
+    
     Returns:
         List of (score, row_dict) tuples sorted by match score.
     """
-    return generalized_fuzzy_search(dem_df, search_terms, threshold)
+    # Filter for exact matches on MRN, AMKA, DOB first to reduce candidate pool
+    filtered_df = dem_df
+    if 'mrn' in search_terms and search_terms['mrn']:
+        filtered_df = filtered_df[filtered_df['mrn'] == search_terms['mrn']]
+        # If MRN found, return exact match immediately
+        if not filtered_df.empty:
+            return [(100, filtered_df.iloc[0].to_dict())]
 
+    if 'amka' in search_terms and search_terms['amka']:
+        filtered_df = filtered_df[filtered_df['amka'] == search_terms['amka']]
+        if not filtered_df.empty:
+            return [(100, filtered_df.iloc[0].to_dict())]
+
+    if 'dob' in search_terms and search_terms['dob']:
+        filtered_df = filtered_df[filtered_df['dob'] == pd.to_datetime(search_terms['dob'])]
+
+    # Prepare search terms for fuzzy matching
+    fuzzy_terms = {}
+    for key in ['fname', 'lname', 'greek_fname', 'greek_lname']:
+        if key in search_terms and search_terms[key]:
+            fuzzy_terms[key] = search_terms[key]
+
+    if not fuzzy_terms:
+        # No fuzzy search terms, return filtered exact matches only
+        return [(100, row.to_dict()) for _, row in filtered_df.iterrows()]
+
+    # Run fuzzy search on filtered_df using fuzzy_terms
+    return generalized_fuzzy_search(filtered_df, fuzzy_terms, threshold)
 
 
 def create_patient(mrn, fname, lname, greek_fname, greek_lname, dob, place_of_birth,
