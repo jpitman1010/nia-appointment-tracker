@@ -224,6 +224,7 @@ class ResearchStudyFieldResponse(db.Model):
 class Appointment(db.Model):
     __tablename__ = "appointment"
     __versioned__ = {}
+    outlook_event_id = db.Column(db.String, nullable=True)
     # GDPR: Time-sensitive clinical actions must be tracked (Article 30, 5)
 
     id = db.Column(db.Integer, primary_key=True)

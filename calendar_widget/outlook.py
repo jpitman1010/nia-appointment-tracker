@@ -1,6 +1,5 @@
 # outlook.py
 # ---- Outlook Calendar Integration using Microsoft Graph API ----
-
 import requests
 from datetime import datetime
 import os
@@ -104,10 +103,67 @@ def is_time_slot_available(start_time, end_time):
     return True
 
 def schedule_if_available(subject, start_time, end_time, body=None, location="NIOA Clinic"):
-    """Schedule an event only if the time slot is available in Outlook."""
     if is_time_slot_available(start_time, end_time):
         print("✅ Time slot is available. Creating event...")
-        return create_outlook_event(subject, start_time, end_time, body, location)
+        event = create_outlook_event(subject, start_time, end_time, body, location)
+        if event and 'id' in event:
+            return event['id']
+        else:
+            return None
     else:
         print("❌ Time slot is NOT available. Please choose a different time.")
         return None
+
+def update_outlook_event(event_id, appointment):
+    try:
+        access_token = get_access_token()
+        url = f"https://graph.microsoft.com/v1.0/users/{user_id}/calendar/events/{event_id}"
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+
+        event_payload = {
+            "subject": f"Appointment with {appointment.patient.fname} {appointment.patient.lname}",
+            "start": {
+                "dateTime": appointment.scheduled_start.isoformat(),
+                "timeZone": "Europe/Athens"
+            },
+            "end": {
+                "dateTime": appointment.scheduled_end.isoformat(),
+                "timeZone": "Europe/Athens"
+            },
+            "location": {
+                "displayName": "NIOA Clinic"
+            }
+        }
+
+        response = requests.patch(url, headers=headers, json=event_payload)
+        response.raise_for_status()
+        return response.json()
+
+    except Exception as e:
+        print(f"[!] Failed to update Outlook event: {e}")
+        return None
+
+def delete_outlook_event(event_id):
+    try:
+        access_token = get_access_token()
+        url = f"https://graph.microsoft.com/v1.0/users/{user_id}/calendar/events/{event_id}"
+
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+
+        response = requests.delete(url, headers=headers)
+        if response.status_code == 204:
+            print("✅ Outlook event deleted successfully")
+            return True
+        else:
+            print(f"[!] Failed to delete event: Status {response.status_code}")
+            return False
+
+    except Exception as e:
+        print(f"[!] Exception deleting Outlook event: {e}")
+        return False

@@ -5,7 +5,6 @@ from flask import (
 from datetime import datetime
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import Session
-
 from models.models import Patient, Staff, Appointment, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, db
 from crud.patient import search_patients, create_patient, find_duplicate_patient
 from crud.staff import search_staff, create_staff, update_staff
@@ -15,7 +14,9 @@ from dotenv import load_dotenv
 from auth.decorators import roles_required
 from werkzeug.security import check_password_hash
 import pandas as pd
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
+from calendar_widget.outlook import schedule_if_available, update_outlook_event, delete_outlook_event
+from dateutil.parser import parse
 
 
 template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'templates')
@@ -110,6 +111,10 @@ def login():
             error = 'Invalid email or password.'
 
     return render_template('login.html', error=error)
+
+@app.route('/calendar')
+def calendar_view():
+    return render_template('calendar.html')
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
@@ -465,37 +470,133 @@ def get_providers():
 # ---Calendar: --- 
 
 @app.route('/api/appointments', methods=['GET'])
-def get_appointments():
-    provider_ids = request.args.getlist('provider_ids[]')  # Array of IDs from query param
-    if not provider_ids:
-        return jsonify([])  # no providers selected, return empty list
+def api_get_appointments():
+    start_str = request.args.get('start')
+    end_str = request.args.get('end')
 
-    # Convert provider_ids to integers safely
+    if not start_str or not end_str:
+        return jsonify({'error': 'Missing start or end query parameters'}), 400
+
     try:
-        provider_ids = list(map(int, provider_ids))
-    except ValueError:
-        return jsonify([])
+        start = parse(start_str)  # more flexible parsing
+        end = parse(end_str)
+    except Exception:
+        return jsonify({'error': 'Invalid date format'}), 400
 
-    # Query appointments for selected providers that are not deleted
     appointments = Appointment.query.filter(
-        Appointment.provider_id.in_(provider_ids),
-        Appointment.deleted == False
+        Appointment.scheduled_start >= start,
+        Appointment.scheduled_start <= end
     ).all()
 
     events = []
     for appt in appointments:
-        patient = Patient.query.get(appt.patient_id)
-        provider = Provider.query.get(appt.provider_id)
         events.append({
-            "id": appt.id,
-            "title": f"{patient.fname} {patient.lname} ({provider.fname} {provider.lname})",
-            "start": appt.scheduled_start.isoformat(),
-            "end": appt.scheduled_end.isoformat(),
-            "providerId": appt.provider_id,
-            "color": None  # We'll assign color on frontend per provider
+            'id': str(appt.id),
+            'title': f"{appt.patient.fname} {appt.patient.lname} - {appt.provider.fname} {appt.provider.lname}",
+            'start': appt.scheduled_start.isoformat(),
+            'end': appt.scheduled_end.isoformat(),
+            'extendedProps': {
+                'patient_id': appt.patient_id,
+                'provider_id': appt.provider_id
+            }
         })
 
     return jsonify(events)
+
+
+# --- Add Appointment ---
+@app.route('/api/appointments', methods=['POST'])
+def api_create_appointment():
+    data = request.get_json() or {}
+
+    patient_id = data.get('patient_id')
+    provider_id = data.get('provider_id')
+    start_time_str = data.get('start_time')
+    end_time_str = data.get('end_time')
+
+    if not all([patient_id, provider_id, start_time_str, end_time_str]):
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+
+    try:
+        start_time = datetime.fromisoformat(start_time_str)
+        end_time = datetime.fromisoformat(end_time_str)
+    except Exception:
+        return jsonify({'success': False, 'error': 'Invalid date format, use ISO format'}), 400
+
+    # Check provider availability using your existing function (implement this if needed)
+    if not is_time_slot_available(provider_id, start_time, end_time):
+        return jsonify({'success': False, 'error': 'Provider not available for requested time slot'}), 409
+
+    created_by = getattr(current_user, 'id', 'system')
+
+    # Create appointment and encounter
+    appointment = create_appointment(patient_id, provider_id, start_time, end_time, created_by)
+
+    # Schedule Outlook event, save event id to appointment
+    event_id = schedule_if_available(
+        subject=f"Appointment with {appointment.patient.fname} {appointment.patient.lname}",
+        start_time=appointment.scheduled_start,
+        end_time=appointment.scheduled_end,
+        body=f"Appointment details for patient MRN {appointment.patient.mrn}",
+        location="NIOA Clinic"
+    )
+    appointment.outlook_event_id = event_id
+
+    db.session.commit()
+    return jsonify({'success': True, 'appointment_id': appointment.id, 'outlook_event_id': event_id})
+
+
+# --- Update Appointment ---
+@app.route('/api/appointments/<int:appointment_id>', methods=['PUT'])
+def api_update_appointment(appointment_id):
+    data = request.get_json() or {}
+
+    start_time_str = data.get('start_time')
+    end_time_str = data.get('end_time')
+
+    if not all([start_time_str, end_time_str]):
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+
+    try:
+        start_time = datetime.fromisoformat(start_time_str)
+        end_time = datetime.fromisoformat(end_time_str)
+    except Exception:
+        return jsonify({'success': False, 'error': 'Invalid date format, use ISO format'}), 400
+
+    appointment = Appointment.query.get(appointment_id)
+    if not appointment:
+        return jsonify({'success': False, 'error': 'Appointment not found'}), 404
+
+    # Check availability if changing provider or times (implement this function)
+    if not is_time_slot_available(appointment.provider_id, start_time, end_time, exclude_appointment_id=appointment_id):
+        return jsonify({'success': False, 'error': 'Provider not available for requested time slot'}), 409
+
+    updated_by = getattr(current_user, 'id', 'system')
+
+    # Update appointment and encounter times
+    updated_appointment = update_appointment(appointment_id, start_time, end_time, updated_by)
+
+    # Update Outlook event accordingly
+    if appointment.outlook_event_id:
+        update_outlook_event(appointment.outlook_event_id, updated_appointment)
+
+    return jsonify({'success': True, 'appointment_id': updated_appointment.id})
+
+
+# --- Delete Appointment ---
+@app.route('/api/appointments/<int:appointment_id>', methods=['DELETE'])
+def api_delete_appointment(appointment_id):
+    appointment = Appointment.query.get(appointment_id)
+    if not appointment:
+        return jsonify({'success': False, 'error': 'Appointment not found'}), 404
+
+    # Delete Outlook event if exists
+    if appointment.outlook_event_id:
+        delete_outlook_event(appointment.outlook_event_id)
+        success = delete_appointment(appointment_id)
+
+    return jsonify({'success': success})
+
 
 # ---Emailing Questionnaires ---
 

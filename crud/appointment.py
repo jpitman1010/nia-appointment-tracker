@@ -2,62 +2,77 @@
 # ---- CRUD operations for Appointment Scheduling and Integration with Outlook ----
 
 from sqlalchemy.orm import Session
-from models.models import Appointment_Scheduling_and_Status
+from models.models import Appointment_Scheduling_and_Status, Appointment, Encounter, db
 from schemas import AppointmentCreate, AppointmentUpdate
-from outlook import schedule_if_available, get_outlook_events
+from calendar_widget.outlook import schedule_if_available, update_outlook_event, delete_outlook_event
 from datetime import datetime, timedelta
 from sqlalchemy import or_, and_
 
 
-def create_appointment(db: Session, appointment_data: AppointmentCreate):
-    """
-    Create a new appointment and attempt to schedule in Outlook if available.
-    """
-    subject = f"Appointment for {appointment_data.mrn} ({appointment_data.research_protocol})"
-    start_time = appointment_data.appointment_scheduled_start
-    end_time = appointment_data.appointment_scheduled_end
-
-    # Check Outlook calendar for availability
-    outlook_event = schedule_if_available(
-        subject=subject,
+def create_appointment(patient_id, provider_id, start_time, end_time, created_by):
+    # Create encounter first
+    encounter = Encounter(
+        patient_id=patient_id,
+        provider_id=provider_id,
         start_time=start_time,
         end_time=end_time,
-        body=f"Scheduled by: {appointment_data.scheduled_by}\nProvider: {appointment_data.provider}",
+        created_by=created_by,
+        updated_by=created_by,
+        created_date=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
+    db.session.add(encounter)
+    db.session.flush()  # so encounter.id is generated
 
-    # Proceed with database insert regardless of Outlook result
-    db_appointment = Appointment_Scheduling_and_Status(
-        mrn=appointment_data.mrn,
-        provider=appointment_data.provider,
-        appointment_scheduled_start=start_time,
-        appointment_scheduled_end=end_time,
-        research_protocol=appointment_data.research_protocol,
-        scheduled_by=appointment_data.scheduled_by,
+    appointment = Appointment(
+        patient_id=patient_id,
+        provider_id=provider_id,
+        scheduled_start=start_time,
+        scheduled_end=end_time,
+        encounter_id=encounter.id,
+        created_by=created_by,
+        updated_by=created_by,
+        created_date=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
-    db.add(db_appointment)
-    db.commit()
-    db.refresh(db_appointment)
-    return db_appointment
+    db.session.add(appointment)
+    db.session.commit()
+    return appointment
 
-
-def update_appointment(db: Session, appointment_id: int, update_data: AppointmentUpdate):
-    appointment = db.query(Appointment_Scheduling_and_Status).filter_by(id=appointment_id).first()
+def update_appointment(appointment_id, start_time, end_time, updated_by):
+    appointment = Appointment.query.get(appointment_id)
     if not appointment:
         return None
 
-    for field, value in update_data.dict(exclude_unset=True).items():
-        setattr(appointment, field, value)
-    db.commit()
-    db.refresh(appointment)
+    appointment.scheduled_start = start_time
+    appointment.scheduled_end = end_time
+    appointment.updated_by = updated_by
+    appointment.updated_at = datetime.utcnow()
+
+    # Also update encounter times if needed
+    if appointment.encounter:
+        appointment.encounter.start_time = start_time
+        appointment.encounter.end_time = end_time
+        appointment.encounter.updated_by = updated_by
+        appointment.encounter.updated_at = datetime.utcnow()
+
+    db.session.commit()
     return appointment
 
+def delete_appointment(appointment_id):
+    appointment = Appointment.query.get(appointment_id)
+    if not appointment:
+        return False
 
-def delete_appointment(db: Session, appointment_id: int):
-    appointment = db.query(Appointment_Scheduling_and_Status).filter_by(id=appointment_id).first()
-    if appointment:
-        db.delete(appointment)
-        db.commit()
-    return appointment
+    # Also delete linked encounter if you want
+    if appointment.encounter:
+        db.session.delete(appointment.encounter)
+
+    db.session.delete(appointment)
+    db.session.commit()
+    return True
+
+
 
 
 def get_appointment_by_id(db: Session, appointment_id: int):
