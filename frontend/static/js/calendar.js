@@ -7,74 +7,69 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteBtn = document.getElementById('deleteBtn');
     const saveBtn = document.getElementById('saveBtn');
   
-    // Elements in modal
+    // Modal inputs
     const appointmentIdInput = document.getElementById('appointmentId');
     const patientIdInput = document.getElementById('patientId');
     const providerIdInput = document.getElementById('providerId');
     const startTimeInput = document.getElementById('startTime');
     const endTimeInput = document.getElementById('endTime');
   
-    // Initialize FullCalendar
+    // Initialize FullCalendar without plugins array (using global min builds)
     const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'timeGridWeek',
-      nowIndicator: true,
+      initialView: 'timeGridWeek', // default to week view
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'timeGridWeek,timeGridDay,listWeek'
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
+      slotDuration: '00:30:00',
+      slotLabelInterval: '00:30:00',
       slotMinTime: '07:00:00',
       slotMaxTime: '19:00:00',
+      nowIndicator: true,
       editable: false,
       selectable: true,
       selectMirror: true,
-  
       events: fetchAppointments,
   
-      // When user selects time range to create appointment
+      // On selecting time slot
       select: function (info) {
         clearForm();
-        appointmentIdInput.value = ''; // new appointment
+        appointmentIdInput.value = '';
         patientIdInput.value = '';
         providerIdInput.value = '';
-        startTimeInput.value = info.startStr.slice(0,16);
-        endTimeInput.value = info.endStr.slice(0,16);
+        startTimeInput.value = info.startStr.slice(0, 16);
+        endTimeInput.value = info.endStr.slice(0, 16);
         deleteBtn.style.display = 'none';
-        errorMsg.style.display = 'none';
+        errorMsg.classList.add('d-none');
         appointmentModal.show();
       },
   
-      // When user clicks on an existing event
+      // On clicking existing event
       eventClick: function (info) {
         clearForm();
         const event = info.event;
-  
         appointmentIdInput.value = event.id;
         patientIdInput.value = event.extendedProps.patient_id || '';
         providerIdInput.value = event.extendedProps.provider_id || '';
-        startTimeInput.value = event.startStr.slice(0,16);
-        endTimeInput.value = event.endStr.slice(0,16);
-  
+        startTimeInput.value = event.startStr.slice(0, 16);
+        endTimeInput.value = event.endStr.slice(0, 16);
         deleteBtn.style.display = 'inline-block';
-        errorMsg.style.display = 'none';
+        errorMsg.classList.add('d-none');
         appointmentModal.show();
       }
     });
   
     calendar.render();
   
-    // Fetch appointments from backend API
+    // Fetch appointments API
     async function fetchAppointments(fetchInfo, successCallback, failureCallback) {
-        console.log('Fetching appointments from', fetchInfo.startStr, 'to', fetchInfo.endStr);
-
-        try {
-        const response = await fetch('/api/appointments?start=' + fetchInfo.startStr + '&end=' + fetchInfo.endStr);
+      try {
+        const url = `/api/appointments?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`;
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        console.log('Fetched appointments:', data);
   
-        // Convert data to FullCalendar event format
-        
         const events = data.map(appt => ({
           id: appt.id.toString(),
           title: `${appt.patient_name} - ${appt.provider_name}`,
@@ -85,10 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
             provider_id: appt.provider_id
           }
         }));
-
-        events: [
-            { id: '1', title: 'Test Appt', start: new Date().toISOString(), end: new Date(new Date().getTime() + 3600000).toISOString() }
-          ],
   
         successCallback(events);
       } catch (error) {
@@ -97,17 +88,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   
-    // Clear modal form fields and error message
+    // Clear form inputs and errors
     function clearForm() {
-      errorMsg.style.display = 'none';
+      errorMsg.classList.add('d-none');
       errorMsg.textContent = '';
       appointmentForm.reset();
     }
   
-    // Handle form submit for create/update
+    // Form submit handler: create or update appointment
     appointmentForm.addEventListener('submit', async function (e) {
       e.preventDefault();
-      errorMsg.style.display = 'none';
+      errorMsg.classList.add('d-none');
   
       const id = appointmentIdInput.value;
       const payload = {
@@ -119,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
       if (!payload.patient_id || !payload.provider_id || !payload.start_time || !payload.end_time) {
         errorMsg.textContent = 'All fields are required.';
-        errorMsg.style.display = 'block';
+        errorMsg.classList.remove('d-none');
         return;
       }
   
@@ -141,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
         if (!response.ok) {
           errorMsg.textContent = result.error || 'Failed to save appointment.';
-          errorMsg.style.display = 'block';
+          errorMsg.classList.remove('d-none');
           return;
         }
   
@@ -150,12 +141,12 @@ document.addEventListener('DOMContentLoaded', function () {
   
       } catch (error) {
         errorMsg.textContent = 'Network error. Please try again.';
-        errorMsg.style.display = 'block';
+        errorMsg.classList.remove('d-none');
         console.error(error);
       }
     });
   
-    // Handle delete button click
+    // Delete button handler
     deleteBtn.addEventListener('click', async function () {
       const id = appointmentIdInput.value;
       if (!id) return;
@@ -171,11 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
           calendar.refetchEvents();
         } else {
           errorMsg.textContent = 'Failed to delete appointment.';
-          errorMsg.style.display = 'block';
+          errorMsg.classList.remove('d-none');
         }
       } catch (error) {
         errorMsg.textContent = 'Network error. Please try again.';
-        errorMsg.style.display = 'block';
+        errorMsg.classList.remove('d-none');
         console.error(error);
       }
     });

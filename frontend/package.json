@@ -12,6 +12,11 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@fullcalendar/core": "^6.1.18",
+    "@fullcalendar/daygrid": "^6.1.18",
+    "@fullcalendar/list": "^6.1.18",
+    "@fullcalendar/timegrid": "^6.1.18",
+    "bootstrap": "^5.3.0",
     "gridstack": "^12.2.1",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21"

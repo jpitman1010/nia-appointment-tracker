@@ -4,89 +4,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Appointments Calendar</title>
+  <title>Appointment Calendar - NIA Appointment Tracker</title>
 
-
-  <!-- Bootstrap CSS (optional for modal styling) -->
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-  <style>
-    body {
-      margin: 40px 10px;
-      padding: 0;
-      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-      background-color: #f8f9fa;
-    }
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.18/main.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.18/main.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.18/main.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.18/main.min.css" rel="stylesheet" />
 
-    #calendar {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: white;
-      padding: 10px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px #ddd;
-    }
-  </style>
+  <!-- Your custom CSS -->
+  <!-- <link href="{{ url_for('static', filename='css/calendar.css') }}" rel="stylesheet" /> -->
 </head>
 
 <body>
+  <div class="container mt-4">
+    <h1>Appointment Calendar</h1>
 
-  <div id="calendar"></div>
+    <div id="calendar"></div>
 
-  <!-- Appointment Modal -->
-  <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <form id="appointmentForm" class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="appointmentModalLabel">Schedule Appointment</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          <input type="hidden" id="appointmentId" />
-
-          <div class="mb-3">
-            <label for="patientId" class="form-label">Patient ID</label>
-            <input type="text" class="form-control" id="patientId" required />
+    <!-- Appointment Modal -->
+    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <form id="appointmentForm" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="appointmentModalLabel">Schedule Appointment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
+          <div class="modal-body">
 
-          <div class="mb-3">
-            <label for="providerId" class="form-label">Provider ID</label>
-            <input type="text" class="form-control" id="providerId" required />
+            <input type="hidden" id="appointmentId" />
+
+            <div class="mb-3">
+              <label for="patientId" class="form-label">Patient ID</label>
+              <input type="text" class="form-control" id="patientId" required />
+            </div>
+
+            <div class="mb-3">
+              <label for="providerId" class="form-label">Provider ID</label>
+              <input type="text" class="form-control" id="providerId" required />
+            </div>
+
+            <div class="mb-3">
+              <label for="startTime" class="form-label">Start Time</label>
+              <input type="datetime-local" class="form-control" id="startTime" required />
+            </div>
+
+            <div class="mb-3">
+              <label for="endTime" class="form-label">End Time</label>
+              <input type="datetime-local" class="form-control" id="endTime" required />
+            </div>
+
+            <div id="errorMsg" class="text-danger mb-3" style="display:none;"></div>
+
           </div>
-
-          <div class="mb-3">
-            <label for="startTime" class="form-label">Start Time</label>
-            <input type="datetime-local" class="form-control" id="startTime" required />
+          <div class="modal-footer">
+            <button type="submit" id="saveBtn" class="btn btn-primary">Save</button>
+            <button type="button" id="deleteBtn" class="btn btn-danger" style="display:none;">Delete</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           </div>
-
-          <div class="mb-3">
-            <label for="endTime" class="form-label">End Time</label>
-            <input type="datetime-local" class="form-control" id="endTime" required />
-          </div>
-
-          <div id="errorMsg" class="text-danger mb-3" style="display:none;"></div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="saveBtn" class="btn btn-primary">Save</button>
-          <button type="button" id="deleteBtn" class="btn btn-danger" style="display:none;">Delete</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
+
   </div>
-
-  <!-- FullCalendar JS -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-
-  <!-- Bootstrap JS Bundle (includes Popper for modals) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Our calendar.js -->
-  <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
-
   <script>
     document.addEventListener( 'DOMContentLoaded', function () {
       var calendarEl = document.getElementById( 'calendar' );
@@ -98,20 +82,17 @@
     } );
   </script>
 
-  <!-- FullCalendar JS -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
-
-  <!-- Bootstrap JS Bundle -->
+  <!-- Bootstrap Bundle JS (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Your custom calendar.js -->
+  <!-- FullCalendar global bundles -->
+  <script src="{{ url_for('static', filename='js/fullcalendar/core/index.global.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/fullcalendar/daygrid/index.global.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/fullcalendar/timegrid/index.global.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/fullcalendar/list/index.global.min.js') }}"></script>
+
+  <!-- Your calendar.js script -->
   <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/gridstack@7.2.1/dist/gridstack.all.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/gridstack@7.2.1/dist/h5/gridstack.min.css" rel="stylesheet" />
-
-
 </body>
 
 </html>
