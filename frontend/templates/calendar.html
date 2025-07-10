@@ -5,42 +5,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Appointment Calendar - NIA Appointment Tracker</title>
-
   <!-- Favicon -->
   <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
-
   <!-- Bootstrap CSS -->
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
-
-  <!-- FullCalendar CSS -->
-  <link href="{{ url_for('static', filename='js/fullcalendar/core/main.min.css') }}" rel="stylesheet" />
-  <link href="{{ url_for('static', filename='js/fullcalendar/daygrid/main.min.css') }}" rel="stylesheet" />
-  <link href="{{ url_for('static', filename='js/fullcalendar/timegrid/main.min.css') }}" rel="stylesheet" />
-  <link href="{{ url_for('static', filename='js/fullcalendar/list/main.min.css') }}" rel="stylesheet" />
-
   <!-- Your custom CSS -->
-  <link href="{{ url_for('static', filename='css/calendar.css') }}" rel="stylesheet" />
-  <style>
-    /* Patient search dropdown fix */
-    #patientResults {
-      z-index: 1050;
-      max-height: 200px;
-      overflow-y: auto;
-      position: absolute;
-      width: 100%;
-      display: none;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 0 0 .25rem .25rem;
-    }
-  </style>
 </head>
 
 <body>
   <div class="container mt-4">
-    <h1>Appointment Calendar</h1>
+    <!-- Button to open modal directly if needed -->
     <button id="scheduleAppointmentModalBtn" class="btn btn-primary mb-3">Schedule Appointment</button>
 
+    <!-- Calendar container -->
     <div id="calendar"></div>
 
     <!-- Appointment Modal -->
@@ -61,16 +38,17 @@
               <label for="patientSearch" class="form-label">Search Patient</label>
               <input type="text" id="patientSearch" class="form-control" autocomplete="off"
                 placeholder="Search patient by MRN, Name or Greek Name" />
-              <div id="patientResults" class="list-group"></div>
+              <div id="patientResults" class="list-group position-absolute w-100"
+                style="z-index: 1050; max-height: 200px; overflow-y: auto; display:none;"></div>
               <input type="hidden" id="patientId" />
             </div>
 
             <!-- Provider Dropdown -->
             <div class="mb-3">
-              <label for="providerSelect" class="form-label">Provider</label>
-              <select id="providerSelect" class="form-select" required>
+              <label for="providerId" class="form-label">Provider</label>
+              <select id="providerId" class="form-select" required>
                 <option value="">Select a provider</option>
-                <!-- Providers loaded dynamically -->
+                <!-- Options will be populated dynamically -->
               </select>
             </div>
 
@@ -95,7 +73,6 @@
         </form>
       </div>
     </div>
-
   </div>
 
   <!-- Bootstrap Bundle JS (includes Popper) -->
@@ -108,106 +85,14 @@
   <script src="{{ url_for('static', filename='js/fullcalendar/list/index.global.min.js') }}"></script>
 
   <script>
-    async function loadProviders() {
-      try {
-        const response = await fetch( '/api/providers' );
-        if ( !response.ok ) throw new Error( 'Failed to load providers' );
-        const providers = await response.json();
-
-        const providerSelect = document.getElementById( 'providerSelect' );
-        providerSelect.innerHTML = '<option value="">Select a provider</option>';
-
-        providers.forEach( provider => {
-          const opt = document.createElement( 'option' );
-          opt.value = provider.id;
-          opt.textContent = `${provider.fname} ${provider.lname}`;
-          providerSelect.appendChild( opt );
-        } );
-      } catch ( err ) {
-        console.error( err );
-      }
-    }
-
-    function setupPatientSearch() {
-      const input = document.getElementById( 'patientSearch' );
-      const results = document.getElementById( 'patientResults' );
-      const hiddenInput = document.getElementById( 'patientId' );
-
-      input.addEventListener( 'input', async () => {
-        const query = input.value.trim();
-        hiddenInput.value = ''; // clear selected patient if input changes
-
-        if ( !query ) {
-          results.style.display = 'none';
-          results.innerHTML = '';
-          return;
-        }
-
-        try {
-          // Adjust the query params based on your backend API
-          const url =
-            `/api/patients?fname=${encodeURIComponent(query)}&lname=${encodeURIComponent(query)}&mrn=${encodeURIComponent(query)}`;
-          const response = await fetch( url );
-          if ( !response.ok ) throw new Error( 'Network error' );
-
-          const data = await response.json();
-
-          if ( !data.length ) {
-            results.style.display = 'none';
-            results.innerHTML = '';
-            return;
-          }
-
-          // Build list buttons for results
-          results.innerHTML = data.map( p => `
-        <button type="button" class="list-group-item list-group-item-action" data-id="${p.id}">
-          ${p.mrn ? `[${p.mrn}] ` : ''}${p.fname} ${p.lname} ${p.greek_fname ? `(${p.greek_fname})` : ''}
-        </button>
-      ` ).join( '' );
-          results.style.display = 'block';
-
-          // Add click event to each button to select patient
-          results.querySelectorAll( 'button' ).forEach( btn => {
-            btn.addEventListener( 'click', () => {
-              input.value = btn.textContent.trim();
-              hiddenInput.value = btn.getAttribute( 'data-id' );
-              results.style.display = 'none';
-            } );
-          } );
-
-        } catch ( error ) {
-          console.error( error );
-          results.style.display = 'none';
-          results.innerHTML = '';
-        }
-      } );
-
-      // Close dropdown if clicked outside
-      document.addEventListener( 'click', ( e ) => {
-        if ( !results.contains( e.target ) && e.target !== input ) {
-          results.style.display = 'none';
-        }
-      } );
-    }
-
-    // Call this setup function inside your window.onload
     window.onload = function () {
-      // ... your existing initialization code ...
-      setupPatientSearch();
-      // ... rest of your code ...
-    };
-
-
-    window.onload = function () {
-      loadProviders();
-      setupPatientSearch();
-
       const calendarEl = document.getElementById( 'calendar' );
       if ( !calendarEl ) {
         console.error( 'Calendar container not found!' );
         return;
       }
 
+      // Lazy init bootstrap modal
       let appointmentModal;
 
       function getModal() {
@@ -217,71 +102,20 @@
         return appointmentModal;
       }
 
+      // Get form elements
       const appointmentForm = document.getElementById( 'appointmentForm' );
       const errorMsg = document.getElementById( 'errorMsg' );
       const deleteBtn = document.getElementById( 'deleteBtn' );
+      const saveBtn = document.getElementById( 'saveBtn' );
 
+      // Modal inputs
       const appointmentIdInput = document.getElementById( 'appointmentId' );
       const patientIdInput = document.getElementById( 'patientId' );
-      const providerIdInput = document.getElementById( 'providerSelect' );
+      const patientSearchInput = document.getElementById( 'patientSearch' );
+      const patientResults = document.getElementById( 'patientResults' );
+      const providerSelect = document.getElementById( 'providerId' );
       const startTimeInput = document.getElementById( 'startTime' );
       const endTimeInput = document.getElementById( 'endTime' );
-
-      window.calendar = new FullCalendar.Calendar( calendarEl, {
-        initialView: 'timeGridWeek',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-        },
-        slotDuration: '00:30:00',
-        slotLabelInterval: '00:30:00',
-        slotMinTime: '07:00:00',
-        slotMaxTime: '19:00:00',
-        nowIndicator: true,
-        editable: false,
-        selectable: true,
-        selectMirror: true,
-        events: fetchAppointments,
-
-        select: function ( info ) {
-          clearForm();
-          appointmentIdInput.value = '';
-          patientIdInput.value = '';
-          providerIdInput.value = '';
-          startTimeInput.value = info.startStr.slice( 0, 16 );
-          endTimeInput.value = info.endStr.slice( 0, 16 );
-          deleteBtn.style.display = 'none';
-          errorMsg.classList.add( 'd-none' );
-          getModal().show();
-        },
-
-        eventClick: function ( info ) {
-          clearForm();
-          const event = info.event;
-          appointmentIdInput.value = event.id;
-          patientIdInput.value = event.extendedProps.patient_id || '';
-          providerIdInput.value = event.extendedProps.provider_id || '';
-          startTimeInput.value = event.startStr.slice( 0, 16 );
-          endTimeInput.value = event.endStr.slice( 0, 16 );
-          deleteBtn.style.display = 'inline-block';
-          errorMsg.classList.add( 'd-none' );
-          getModal().show();
-        }
-      } );
-
-      calendar.render();
-
-      document.querySelectorAll( 'a[data-bs-toggle="tab"]' ).forEach( tab => {
-        tab.addEventListener( 'shown.bs.tab', function ( event ) {
-          const targetTab = event.target.getAttribute( 'href' );
-          if ( targetTab === '#calendar-tab' || targetTab === '#calendar' ) {
-            if ( window.calendar ) {
-              window.calendar.updateSize();
-            }
-          }
-        } );
-      } );
 
       async function fetchAppointments( fetchInfo, successCallback, failureCallback ) {
         try {
@@ -308,27 +142,148 @@
         }
       }
 
+      // Initialize FullCalendar
+      window.calendar = new FullCalendar.Calendar( calendarEl, {
+        initialView: 'timeGridWeek',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        slotDuration: '00:30:00',
+        slotLabelInterval: '00:30:00',
+        slotMinTime: '07:00:00',
+        slotMaxTime: '19:00:00',
+        nowIndicator: true,
+        editable: false,
+        selectable: true,
+        selectMirror: true,
+        events: fetchAppointments,
+
+        select: function ( info ) {
+          clearForm();
+          appointmentIdInput.value = '';
+          patientIdInput.value = '';
+          patientSearchInput.value = '';
+          providerSelect.value = '';
+          startTimeInput.value = info.startStr.slice( 0, 16 );
+          endTimeInput.value = info.endStr.slice( 0, 16 );
+          deleteBtn.style.display = 'none';
+          errorMsg.style.display = 'none';
+          getModal().show();
+        },
+
+        eventClick: function ( info ) {
+          clearForm();
+          const event = info.event;
+          appointmentIdInput.value = event.id;
+          patientIdInput.value = event.extendedProps.patient_id || '';
+          patientSearchInput.value = event.extendedProps.patient_name || '';
+          providerSelect.value = event.extendedProps.provider_id || '';
+          startTimeInput.value = event.startStr.slice( 0, 16 );
+          endTimeInput.value = event.endStr.slice( 0, 16 );
+          deleteBtn.style.display = 'inline-block';
+          errorMsg.style.display = 'none';
+          getModal().show();
+        }
+      } );
+      calendar.render();
+
+      // Load providers dynamically
+      async function loadProviders() {
+        try {
+          const response = await fetch( '/api/providers' );
+          if ( !response.ok ) throw new Error( 'Failed to load providers' );
+          const providers = await response.json();
+
+          providers.forEach( provider => {
+            const opt = document.createElement( 'option' );
+            opt.value = provider.id;
+            opt.textContent = `${provider.fname} ${provider.lname}`;
+            providerSelect.appendChild( opt );
+          } );
+        } catch ( err ) {
+          console.error( err );
+        }
+      }
+      loadProviders();
+
+      // Patient live search
+      patientSearchInput.addEventListener( 'input', async () => {
+        const query = patientSearchInput.value.trim();
+        patientIdInput.value = ''; // reset selected patient
+
+        if ( !query ) {
+          patientResults.style.display = 'none';
+          patientResults.innerHTML = '';
+          return;
+        }
+
+        try {
+          const res = await fetch( `/api/patients?q=${encodeURIComponent(query)}` );
+
+          if ( !res.ok ) throw new Error( 'Network error' );
+          const data = await res.json();
+
+          if ( !data.length ) {
+            patientResults.style.display = 'none';
+            patientResults.innerHTML = '';
+            return;
+          }
+
+          patientResults.innerHTML = data.map( p => `
+            <button type="button" class="list-group-item list-group-item-action" data-id="${p.id}" data-name="${p.fname} ${p.lname}">
+              ${p.mrn ? `[${p.mrn}] ` : ''}${p.fname} ${p.lname} ${p.greek_fname ? `(${p.greek_fname})` : ''}
+            </button>
+          ` ).join( '' );
+          patientResults.style.display = 'block';
+
+          patientResults.querySelectorAll( 'button' ).forEach( btn => {
+            btn.addEventListener( 'click', () => {
+              patientSearchInput.value = btn.getAttribute( 'data-name' );
+              patientIdInput.value = btn.getAttribute( 'data-id' );
+              patientResults.style.display = 'none';
+            } );
+          } );
+
+        } catch ( error ) {
+          console.error( error );
+          patientResults.style.display = 'none';
+          patientResults.innerHTML = '';
+        }
+      } );
+
+      // Close patient dropdown if clicked outside
+      document.addEventListener( 'click', ( e ) => {
+        if ( !patientResults.contains( e.target ) && e.target !== patientSearchInput ) {
+          patientResults.style.display = 'none';
+        }
+      } );
+
+      // Clear form helper
       function clearForm() {
-        errorMsg.classList.add( 'd-none' );
+        errorMsg.style.display = 'none';
         errorMsg.textContent = '';
         appointmentForm.reset();
       }
 
+      // Form submit handler
       appointmentForm.addEventListener( 'submit', async function ( e ) {
         e.preventDefault();
-        errorMsg.classList.add( 'd-none' );
+        errorMsg.style.display = 'none';
 
         const id = appointmentIdInput.value;
         const payload = {
-          patient_id: patientIdInput.value.trim(),
-          provider_id: providerIdInput.value.trim(),
+          patient_id: patientIdInput.value,
+          provider_id: providerSelect.value,
           start_time: startTimeInput.value,
           end_time: endTimeInput.value
         };
 
+        // Validate required fields
         if ( !payload.patient_id || !payload.provider_id || !payload.start_time || !payload.end_time ) {
           errorMsg.textContent = 'All fields are required.';
-          errorMsg.classList.remove( 'd-none' );
+          errorMsg.style.display = 'block';
           return;
         }
 
@@ -352,7 +307,7 @@
 
           if ( !response.ok ) {
             errorMsg.textContent = result.error || 'Failed to save appointment.';
-            errorMsg.classList.remove( 'd-none' );
+            errorMsg.style.display = 'block';
             return;
           }
 
@@ -361,11 +316,12 @@
 
         } catch ( error ) {
           errorMsg.textContent = 'Network error. Please try again.';
-          errorMsg.classList.remove( 'd-none' );
+          errorMsg.style.display = 'block';
           console.error( error );
         }
       } );
 
+      // Delete button handler
       deleteBtn.addEventListener( 'click', async function () {
         const id = appointmentIdInput.value;
         if ( !id ) return;
@@ -383,19 +339,24 @@
             calendar.refetchEvents();
           } else {
             errorMsg.textContent = 'Failed to delete appointment.';
-            errorMsg.classList.remove( 'd-none' );
+            errorMsg.style.display = 'block';
           }
         } catch ( error ) {
           errorMsg.textContent = 'Network error. Please try again.';
-          errorMsg.classList.remove( 'd-none' );
+          errorMsg.style.display = 'block';
           console.error( error );
         }
       } );
+
+      // Also bind the button outside modal for manual open
       document.getElementById( 'scheduleAppointmentModalBtn' ).addEventListener( 'click', () => {
+        clearForm();
         getModal().show();
       } );
     };
   </script>
+
+  <!-- Your custom CSS can go here -->
 </body>
 
 </html>

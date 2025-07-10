@@ -255,49 +255,113 @@ def dashboard():
 
 
 # --- Patient Search ---
-
 @app.route('/api/patients', methods=['GET'])
 def api_patients():
-    search_terms = {
-        'mrn': request.args.get('mrn', default=None),
-        'greek_fname': request.args.get('greek_fname', default=None),
-        'greek_lname': request.args.get('greek_lname', default=None),
-        'fname': request.args.get('fname', default=None),
-        'lname': request.args.get('lname', default=None),
-        'dob': request.args.get('dob', default=None),
-        'phone': request.args.get('phone', default=None),
-        'email': request.args.get('email', default=None),
-        'amka': request.args.get('amka', default=None)
-    }
-    # Filter out empty values
-    search_terms = {k: v for k, v in search_terms.items() if v}
+    q = request.args.get('q', default=None)
 
-    # Fetch all patients from DB
-    patients = db.session.query(Patient).all()
-    if not patients:
-        return jsonify([])
+    if q is not None and q.strip() != '':
+        q_lower = q.lower()
+        patients = Patient.query.all()
+        filtered_patients = []
+        for p in patients:
+            if (q_lower in (p.mrn or '').lower() or
+                q_lower in (p.fname or '').lower() or
+                q_lower in (p.lname or '').lower() or
+                q_lower in (p.greek_fname or '').lower() or
+                q_lower in (p.greek_lname or '').lower()):
+                filtered_patients.append(p)
 
-    # Convert patients to DataFrame for fuzzy search
-    dem_df = pd.DataFrame([{
-        'id': p.id,
-        'mrn': p.mrn,
-        'greek_fname': p.greek_fname,
-        'greek_lname': p.greek_lname,
-        'fname': p.fname,
-        'lname': p.lname,
-        'dob': p.dob.strftime('%Y-%m-%d') if p.dob else None,
-        'phone': p.phone,
-        'email': p.email,
-        'amka': p.amka
-    } for p in patients])
+        # Use filtered_patients as the list of model objects
+        patients_to_serialize = filtered_patients
 
-    # Call fuzzy search
-    results = search_patients(dem_df, search_terms)
+    else:
+        # Fuzzy search part - this likely creates dicts:
+        # Fetch all patients from DB as ORM objects
+        all_patients = Patient.query.all()
+        if not all_patients:
+            return jsonify([])
 
-    # Return only matched rows as JSON
-    response = [row for score, row in results]
+        dem_df = pd.DataFrame([{
+            'id': p.id,
+            'mrn': p.mrn,
+            'greek_fname': p.greek_fname,
+            'greek_lname': p.greek_lname,
+            'fname': p.fname,
+            'lname': p.lname,
+            'dob': p.dob.strftime('%Y-%m-%d') if p.dob else None,
+            'phone': p.phone,
+            'email': p.email,
+            'amka': p.amka
+        } for p in all_patients])
+
+        results = search_patients(dem_df, request.args)
+
+        # results is a list of tuples (score, dict row)
+        patients_to_serialize = [row for score, row in results]
+
+    # Now serialize patients_to_serialize:
+    # If they are model objects:
+    if patients_to_serialize and isinstance(patients_to_serialize[0], Patient):
+        response = [{
+            'id': p.id,
+            'mrn': p.mrn,
+            'greek_fname': p.greek_fname,
+            'greek_lname': p.greek_lname,
+            'fname': p.fname,
+            'lname': p.lname,
+            'dob': p.dob.strftime('%Y-%m-%d') if p.dob else None,
+            'phone': p.phone,
+            'email': p.email,
+            'amka': p.amka
+        } for p in patients_to_serialize]
+    else:
+        # Otherwise assume dicts, send as is
+        response = patients_to_serialize
 
     return jsonify(response)
+
+# @app.route('/api/patients', methods=['GET'])
+# def api_patients():
+#     search_terms = {
+#         'mrn': request.args.get('mrn', default=None),
+#         'greek_fname': request.args.get('greek_fname', default=None),
+#         'greek_lname': request.args.get('greek_lname', default=None),
+#         'fname': request.args.get('fname', default=None),
+#         'lname': request.args.get('lname', default=None),
+#         'dob': request.args.get('dob', default=None),
+#         'phone': request.args.get('phone', default=None),
+#         'email': request.args.get('email', default=None),
+#         'amka': request.args.get('amka', default=None)
+#     }
+#     # Filter out empty values
+#     search_terms = {k: v for k, v in search_terms.items() if v}
+
+#     # Fetch all patients from DB
+#     patients = db.session.query(Patient).all()
+#     if not patients:
+#         return jsonify([])
+
+#     # Convert patients to DataFrame for fuzzy search
+#     dem_df = pd.DataFrame([{
+#         'id': p.id,
+#         'mrn': p.mrn,
+#         'greek_fname': p.greek_fname,
+#         'greek_lname': p.greek_lname,
+#         'fname': p.fname,
+#         'lname': p.lname,
+#         'dob': p.dob.strftime('%Y-%m-%d') if p.dob else None,
+#         'phone': p.phone,
+#         'email': p.email,
+#         'amka': p.amka
+#     } for p in patients])
+
+#     # Call fuzzy search
+#     results = search_patients(dem_df, search_terms)
+
+#     # Return only matched rows as JSON
+#     response = [row for score, row in results]
+
+#     return jsonify(response)
 
 
 
