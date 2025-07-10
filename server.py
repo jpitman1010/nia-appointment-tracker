@@ -5,7 +5,7 @@ from flask import (
 from datetime import datetime
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import Session
-from models.models import Patient, Staff, Appointment, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, db
+from models.models import Patient, Staff, Appointment, Questionnaire, Question, QuestionOption, QuestionnaireResponse, Response, Provider, db
 from crud.patient import search_patients, create_patient, find_duplicate_patient
 from crud.staff import search_staff, create_staff, update_staff
 from search.search import Search, GreekAwareSearch
@@ -29,6 +29,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 # Optional: set login view for redirects
 login_manager.login_view = 'login'  # your login route endpoint name
+api = Blueprint('api', __name__)
+app.register_blueprint(api)
+
 
 # User loader callback so flask-login knows how to get a user by id
 @login_manager.user_loader
