@@ -1,7 +1,22 @@
+
 window.onload = function() {
   const calendarEl = document.getElementById('calendar');
+  
+  if (!calendarEl) {
+    console.error('Calendar container not found!');
+    return;
+  }
 
-  const appointmentModal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+  let appointmentModal;
+  function getModal() {
+    if (!appointmentModal) {
+      appointmentModal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+    }
+    return appointmentModal;
+  }
+
+  
+  // const appointmentModal = new bootstrap.Modal(document.getElementById('appointmentModal'));
   const appointmentForm = document.getElementById('appointmentForm');
   const errorMsg = document.getElementById('errorMsg');
   const deleteBtn = document.getElementById('deleteBtn');
@@ -35,7 +50,9 @@ window.onload = function() {
 
     // On selecting time slot
     select: function (info) {
+      console.log('select fired', info);
       clearForm();
+      // populate form inputs
       appointmentIdInput.value = '';
       patientIdInput.value = '';
       providerIdInput.value = '';
@@ -43,11 +60,14 @@ window.onload = function() {
       endTimeInput.value = info.endStr.slice(0, 16);
       deleteBtn.style.display = 'none';
       errorMsg.classList.add('d-none');
-      appointmentModal.show();
+      // appointmentModal.show();
+      getModal().show();
+
     },
 
     // On clicking existing event
     eventClick: function (info) {
+      console.log('eventClick fired', info.event);
       clearForm();
       const event = info.event;
       appointmentIdInput.value = event.id;
@@ -57,9 +77,11 @@ window.onload = function() {
       endTimeInput.value = event.endStr.slice(0, 16);
       deleteBtn.style.display = 'inline-block';
       errorMsg.classList.add('d-none');
-      appointmentModal.show();
+      getModal().show();
+      // appointmentModal.show();
     }
   });
+  console.log('FullCalendar initialized:', window.calendar);
 
   calendar.render();
 
@@ -183,5 +205,6 @@ window.onload = function() {
         errorMsg.textContent = 'Network error. Please try again.';
         errorMsg.classList.remove('d-none');
         console.error(error);
-      }
+      };
     });
+};

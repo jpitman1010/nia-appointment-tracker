@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard - NIA Appointment Tracker</title>
+  <title>Dashboard - Appointment Tracker</title>
   <!-- Favicon -->
   <link rel="icon" href=" {{ url_for('static', filename='images/favicon.ico') }} " />
   <!-- Bootstrap CSS -->
@@ -14,10 +14,10 @@
   <link href="https://cdn.jsdelivr.net/npm/gridstack@7.2.1/dist/gridstack.min.css" rel="stylesheet" />
 
   <!-- FullCalendar CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.18/main.min.css" rel="stylesheet" />
+  <!-- <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.18/main.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.18/main.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.18/main.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.18/main.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.18/main.min.css" rel="stylesheet" /> -->
 
   <!-- Your static CSS -->
 </head>
@@ -181,11 +181,6 @@
         </div>
       </div>
     </div>
-    <!-- Calendar Tab Content -->
-
-    <div class="tab-pane fade" id="calendar-tab-pane" role="tabpanel" aria-labelledby="calendar-tab">
-      <iframe id="calendarIframe" src="/calendar" style="width:100%; height:700px; border:none;"></iframe>
-    </div>
   </div>
   </div>
 
@@ -193,7 +188,6 @@
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
   <!-- Lodash (GridStack dependency) -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> -->
   <script src="{{ url_for('static', filename='js/lodash.min.js') }}"></script>
 
   <!-- GridStack JS -->
@@ -201,14 +195,14 @@
   <script src="{{ url_for('static', filename='js/gridstack-all.js') }}"></script>
 
   <!-- FullCalendar global bundles -->
-  <script src="{{ url_for('static', filename='js/fullcalendar/core/index.global.min.js') }}"></script>
+  <!-- <script src="{{ url_for('static', filename='js/fullcalendar/core/index.global.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/fullcalendar/daygrid/index.global.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/fullcalendar/timegrid/index.global.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/fullcalendar/list/index.global.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/fullcalendar/list/index.global.min.js') }}"></script> -->
 
 
   <!-- Your compiled JS bundles -->
-  <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+  <!-- <script src="{{ url_for('static', filename='js/calendar.js') }}"></script> -->
 
   <script>
     document.addEventListener( 'DOMContentLoaded', function () {
@@ -223,17 +217,22 @@
           handles: 'e, se, s, sw, w'
         }
       } );
-
-      // You can add your custom dashboard JS here, e.g. patient search form handling
     } );
   </script>
   <script>
-    document.querySelectorAll( 'a[data-bs-toggle="tab"]' ).forEach( tab => {
-      tab.addEventListener( 'shown.bs.tab', function ( event ) {
-        // Replace '#calendar' with your actual calendar tab pane ID if different
-        if ( event.target.getAttribute( 'href' ) === '#calendar' ) {
-          if ( window.calendar ) {
-            window.calendar.updateSize();
+    document.querySelectorAll( 'button[data-bs-toggle="tab"]' ).forEach( tabBtn => {
+      tabBtn.addEventListener( 'shown.bs.tab', function ( event ) {
+        const targetId = event.target.getAttribute( 'data-bs-target' ) || event.target.getAttribute( 'href' );
+        if ( targetId === '#dashboard-tab-pane' ) {
+          // Hide the dynamically inserted calendar container
+          const calendarDiv = document.getElementById( 'calendar-container' );
+          if ( calendarDiv ) {
+            calendarDiv.style.display = 'none';
+          }
+          // Show the dashboard grid-stack container
+          const gridStack = document.querySelector( '.grid-stack' );
+          if ( gridStack ) {
+            gridStack.style.display = 'block';
           }
         }
       } );
