@@ -12,6 +12,43 @@
   <!-- GridStack CSS -->
   <link href="https://cdn.jsdelivr.net/npm/gridstack@7.2.1/dist/gridstack.min.css" rel="stylesheet" />
   <!-- Your static CSS -->
+  <style>
+    .grid-stack-item,
+    .grid-stack-item>.grid-stack-item-content {
+      box-sizing: border-box;
+    }
+
+    .grid-stack-item-content {
+      padding: 1rem;
+      /* keep your padding, adjust if too large */
+      margin: 0;
+      height: 100%;
+      overflow: auto;
+    }
+
+    /* Reset default margins inside widgets that might add height */
+    .grid-stack-item-content h4,
+    .grid-stack-item-content h5,
+    .grid-stack-item-content p,
+    .grid-stack-item-content label,
+    .grid-stack-item-content form {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      /* Adjust for spacing as you prefer */
+    }
+
+    /* Reduce line-height if too tall */
+    .grid-stack-item-content p,
+    .grid-stack-item-content label {
+      line-height: 1.2;
+    }
+
+    /* Optional: smaller vertical margins for form elements */
+    .grid-stack-item-content label {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+  </style>
 </head>
 
 <body>
@@ -57,7 +94,7 @@
           <!-- Appointment Overview Widget -->
           <div class="grid-stack-item" gs-w="4" gs-h="2" gs-x="8" gs-y="0">
             <div class="grid-stack-item-content p-3 border rounded bg-light">
-              <h5>Appointment Overview</h5>
+              <h4>Appointment Overview</h4>
               <p>Summary and quick stats here.</p>
             </div>
           </div>
@@ -65,7 +102,7 @@
           <!-- Patient Search Widget with live fuzzy search -->
           <div class="grid-stack-item" gs-w="8" gs-h="3" gs-x="0" gs-y="2">
             <div class="grid-stack-item-content p-3 border rounded bg-light">
-              <h5>Patient Search (Live Fuzzy Search)</h5>
+              <h4>Patient Search</h4>
               <input type="text" id="livePatientSearch" class="form-control mb-2" autocomplete="off"
                 placeholder="Search patient by MRN, Name or Greek Name" />
               <div id="livePatientResults" class="list-group mb-3"
@@ -89,12 +126,12 @@
               </table>
             </div>
           </div>
-
           <!-- Add Patient Widget -->
-          <div class="grid-stack-item" gs-w="4" gs-h="4" gs-x="8" gs-y="2">
-            <div class="grid-stack-item-content p-3 border rounded bg-light">
-              <h5>Add New Patient</h5>
-              <form id="add-patient-form">
+          <div class="grid-stack-item ui-resizable-autohide" gs-w="4" gs-h="1.5" gs-x="8" gs-y="2">
+            <div class="grid-stack-item-content p-3 border rounded bg-light"
+              style="max-height: 100%; overflow-y: auto;">
+              <h4>Add New Patient</h4>
+              <form id="add-patient-form" style="max-height: 100%; overflow-y: auto;">
                 <fieldset>
                   <legend>*Latin Name (required if Greek name not provided)</legend>
                   <label>First Name (Latin): <input type="text" name="fname" /></label><br />
@@ -140,8 +177,16 @@
               </form>
               <div id="add-patient-result" class="mt-2"></div>
             </div>
+            <!-- resize handles as usual -->
+            <div class="ui-resizable-handle ui-resizable-n"></div>
+            <div class="ui-resizable-handle ui-resizable-ne"></div>
+            <div class="ui-resizable-handle ui-resizable-e"></div>
+            <div class="ui-resizable-handle ui-resizable-se"></div>
+            <div class="ui-resizable-handle ui-resizable-s"></div>
+            <div class="ui-resizable-handle ui-resizable-sw"></div>
+            <div class="ui-resizable-handle ui-resizable-w"></div>
+            <div class="ui-resizable-handle ui-resizable-nw"></div>
           </div>
-
         </div>
       </div>
 
@@ -165,13 +210,14 @@
     document.addEventListener( 'DOMContentLoaded', function () {
       // Initialize GridStack once
       GridStack.init( {
-        cellHeight: 250,
+        cellHeight: 60, // your base cell height in px
+        margin: 10, // match --gs-item-margin-*
         float: true,
+        resizable: {
+          handles: 'n, ne, e, se, s, sw, w, nw'
+        },
         draggable: {
           handle: '.grid-stack-item-content'
-        },
-        resizable: {
-          handles: 'e, se, s, sw, w'
         }
       } );
     } );
@@ -251,13 +297,9 @@
         }
 
         try {
-          // Search API call with query repeated across multiple fields
+          // Search API call with single 'q' param for fuzzy search
           const params = new URLSearchParams( {
-            fname: query,
-            lname: query,
-            greek_fname: query,
-            greek_lname: query,
-            mrn: query
+            q: query
           } );
 
           const response = await fetch( '/api/patients?' + params.toString() );
@@ -273,7 +315,7 @@
             return;
           }
 
-          // Show results list
+          // Show dropdown list
           resultsDiv.innerHTML = patients.map( p => `
             <button type="button" class="list-group-item list-group-item-action" data-id="${p.id}">
               ${p.mrn ? `[${p.mrn}] ` : ''}${p.fname} ${p.lname} ${p.greek_fname ? `(${p.greek_fname})` : ''}
@@ -281,7 +323,7 @@
           ` ).join( '' );
           resultsDiv.style.display = 'block';
 
-          // Also update results table for advanced view
+          // Populate advanced results table
           resultsBody.innerHTML = patients.map( p => `
             <tr>
               <td>${p.mrn || ''}</td>
@@ -297,13 +339,12 @@
           ` ).join( '' );
           resultsTable.style.display = 'table';
 
-          // Click handler for list group buttons
+          // Bind click event on dropdown items
           resultsDiv.querySelectorAll( 'button' ).forEach( btn => {
             btn.addEventListener( 'click', () => {
               liveInput.value = btn.textContent.trim();
               resultsDiv.style.display = 'none';
-
-              // Optionally you can do something with selected patient id here
+              // You may store selected patient id here if needed
             } );
           } );
 
